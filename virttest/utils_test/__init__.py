@@ -962,18 +962,9 @@ def run_autotest(vm, session, control_path, timeout,
         server_control_path = os.path.join(control_path, "control.server")
         server_control_path = config_control(server_control_path)
         control_path = os.path.join(control_path, "control.client")
-    # Edit control file and copy it to vm.
-    if control_args is not None:
-        job_args = {'args': control_args}
-    else:
-        job_args = None
-    temp_control_path = config_control(control_path, job_args=job_args)
-    vm.copy_files_to(temp_control_path,
-                     os.path.join(destination_autotest_path, 'control'))
-
-    # remove the temp control file.
-    if os.path.exists(temp_control_path):
-        os.remove(temp_control_path)
+    # Don't edit control file and copy it to vm.
+    vm.copy_files_to(control_path, os.path.join(destination_autotest_path,
+                                                'control'))
 
     if not kernel_install_present:
         kernel_install_dir = os.path.join(virttest.data_dir.get_root_dir(),
