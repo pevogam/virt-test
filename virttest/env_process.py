@@ -611,15 +611,15 @@ def preprocess(test, params, env):
         vms = list(set(params.objects("vms") + migrate_vms))
         params["vms"] = ' '.join(vms)
 
-    # Destroy and remove VMs that are no longer needed in the environment
+    # Do not touch VMs that are disregarded in this test but mention them
     requested_vms = params.objects("vms")
     for key in env.keys():
         vm = env[key]
         if not isinstance(vm, virt_vm.BaseVM):
             continue
         if vm.name not in requested_vms:
-            vm.destroy()
-            del env[key]
+            logging.debug("The vm %s is registered in the env and disregarded "
+                          "in the current test", vm.name)
 
     if (params.get("auto_cpu_model") == "yes" and
             vm_type == "qemu"):
