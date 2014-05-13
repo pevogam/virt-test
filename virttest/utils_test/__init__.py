@@ -951,6 +951,22 @@ def run_autotest(vm, session, control_path, timeout,
     vm.copy_files_to(g_path, global_config_guest)
     os.unlink(g_path)
 
+    if params.get("redeploy_test") is not None:
+        logging.warning("Redeploying the guest test %s", params.get("redeploy_test"))
+        intra2net_top_path = settings_value('COMMON', 'autotest_intra2net_top_path')
+        source_test_dir = os.path.join(intra2net_top_path, 'guest', 'tests')
+        source_test = os.path.join(source_test_dir,
+                                   params.get("redeploy_test"),
+                                   params.get("redeploy_test") + ".py")
+        destination_test = os.path.join(destination_test_dir,
+                                        params.get("redeploy_test"),
+                                        params.get("redeploy_test") + ".py")
+
+        # very good idea thanks to Philipp - checking for simple mistakes doesn't need to wait
+        from py_compile import compile
+        compile(source_test)
+        vm.copy_files_to(source_test, destination_test)
+
     if not single_dir_install:
         vm.copy_files_to(autotest_local_path,
                          os.path.join(destination_autotest_path,
