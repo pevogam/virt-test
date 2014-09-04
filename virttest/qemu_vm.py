@@ -387,7 +387,7 @@ class VM(virt_vm.BaseVM):
 
         def process_sandbox(devices, action):
             if action == "add":
-                if devices.has_option("sandbox"):
+                if False: # I2N seccomp hack <<< if devices.has_option("sandbox"): >>>
                     return " -sandbox on "
             elif action == "rem":
                 if devices.has_option("sandbox"):
