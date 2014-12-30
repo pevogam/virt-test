@@ -628,6 +628,15 @@ def preprocess(test, params, env):
             env["cpu_model"] = utils_misc.get_qemu_best_cpu_model(params)
         params["cpu_model"] = env.get("cpu_model")
 
+    # Importing vm network at the beginning causes circular reference
+    # since it uses arnied_proxy which uses the env_process.
+    import vmnet
+    vmnet = vmnet.VMNetwork(test, params, env)
+    vmnet.setup_host_bridges()
+    vmnet.setup_host_services()
+    # TODO: we could implement get_vmnet() method in the env, similar to get_vm()
+    env.vmnet = vmnet
+
     kvm_ver_cmd = params.get("kvm_ver_cmd", "")
 
     if kvm_ver_cmd:

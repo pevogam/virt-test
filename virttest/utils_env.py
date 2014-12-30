@@ -218,6 +218,18 @@ class Env(UserDict.IterableUserDict):
             if os.path.isfile(self._filename):
                 os.unlink(self._filename)
 
+    def get_vmnet(self):
+        """
+        Return a VM network object.
+
+        NOTE: We could integrate it better into the env data,
+        thus registering and storing it as a vm, lvmdev, or a
+        syncserver, but for now there is no requirement for
+        such depth of integration, therefore we simply use a
+        temporary attribute to do the job.
+        """
+        return self.vmnet
+
     def get_vm(self, name):
         """
         Return a VM object by its name.
