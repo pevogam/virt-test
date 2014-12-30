@@ -29,6 +29,7 @@ import nfs
 import libvirt_vm
 from autotest.client import local_host
 
+import state_setup
 
 try:
     import PIL.Image
@@ -649,6 +650,11 @@ def preprocess(test, params, env):
     logging.debug("KVM version: %s" % kvm_version)
     test.write_test_keyval({"kvm_version": kvm_version})
 
+    # Although this command could have been placed better, it has to follow a network
+    # setup stage and has to be far enough from the other patches above to avoid
+    # overlapping and therefore patch conflict (preserving patch independence).
+    state_setup.get_state(params, env)
+
     # Get the KVM userspace version and write it as a keyval
     kvm_userspace_ver_cmd = params.get("kvm_userspace_ver_cmd", "")
 
@@ -960,6 +966,12 @@ def postprocess(test, params, env):
     # Kill all aexpect tail threads
     aexpect.kill_tail_threads()
 
+    # Save all online states before closing the connections to the qemu
+    # monitors and postpone offline states for later in the postprocessing
+    # stage to ensure data is written to disk
+    params["skip_types"] = "offline"
+    state_setup.set_state(params, env)
+
     living_vms = [vm for vm in env.get_all_vms() if vm.is_alive()]
     # Close all monitor socket connections of living vm.
     for vm in living_vms:
@@ -1110,6 +1122,13 @@ def postprocess(test, params, env):
         except Exception, details:
             err += "\nPB cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
+
+    # Save all offline states after the vm to shutdown are actually down
+    # to ensure data is written to disk - keep in mind that if you take an
+    # offline snapshot of a living vm, there is a risk of taking the snapshot
+    # too early so such practice is rather deprecated
+    params["skip_types"] = "online ramdisk"
+    state_setup.set_state(params, env)
 
     if err:
         raise virt_vm.VMError("Failures occurred while postprocess:%s" % err)
