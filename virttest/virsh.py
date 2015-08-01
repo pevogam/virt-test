@@ -58,8 +58,6 @@ VIRSH_COMMAND_GROUP_CACHE_NO_DETAIL = False
 try:
     VIRSH_EXEC = os_dep.command("virsh")
 except ValueError:
-    logging.warning("Virsh executable not set or found on path, "
-                    "virsh module will not function normally")
     VIRSH_EXEC = '/bin/true'
 
 

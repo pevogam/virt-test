@@ -1366,7 +1366,7 @@ class VM(virt_vm.BaseVM):
 
         # Add virtio_serial ports
         if not devices.has_option("virtconsole"):
-            logging.warn("virtiocosole/serial device not support")
+            logging.debug("virtiocosole/serial device not support")
         else:
             no_virtio_serial_pcis = 0
             no_virtio_ports = 0

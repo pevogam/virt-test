@@ -23,7 +23,9 @@ __all__ = ['GstPythonVideoMaker', 'video_maker']
 #
 # Gstreamer python bindings are our first choice
 try:
-    import gst
+    import gi
+    gi.require_version('Gst', '1.0')
+    import gi.repository.Gst as Gst
     GST_PYTHON_INSTALLED = True
 except ImportError:
     GST_PYTHON_INSTALLED = False
@@ -66,6 +68,7 @@ class GstPythonVideoMaker(object):
             raise ValueError('gstreamer-python library was not found')
         if not PIL_INSTALLED:
             raise ValueError('python-imaging library was not found')
+        Gst.init(None)
 
         self.verbose = verbose
 
@@ -110,7 +113,7 @@ class GstPythonVideoMaker(object):
         '''
         Returns True if a gstreamer element is available
         '''
-        return gst.element_factory_find(kind) is not None
+        return Gst.ElementFactory.find(kind) is not None
 
     def get_container_name(self):
         '''
@@ -136,11 +139,11 @@ class GstPythonVideoMaker(object):
 
     def get_element(self, name):
         '''
-        Makes and returns and element from the gst factory interface
+        Makes and returns and element from the Gst factory interface
         '''
         if self.verbose:
             logging.debug('GStreamer element requested: %s', name)
-        return gst.element_factory_make(name, name)
+        return Gst.ElementFactory.make(name, name)
 
     def start(self, input_dir, output_file):
         '''
@@ -160,7 +163,7 @@ class GstPythonVideoMaker(object):
         if self.verbose:
             logging.debug('Number of files to encode as video: %s', no_files)
 
-        pipeline = gst.Pipeline("pipeline")
+        pipeline = Gst.Pipeline()
 
         source = self.get_element("multifilesrc")
         source_location = os.path.join(input_dir, "%04d.jpg")
@@ -168,8 +171,7 @@ class GstPythonVideoMaker(object):
             logging.debug("Source location: %s", source_location)
         source.set_property('location', source_location)
         source.set_property('index', index_list[0])
-        source_caps = gst.Caps()
-        source_caps.append('image/jpeg,framerate=(fraction)4/1')
+        source_caps = Gst.Caps.from_string('image/jpeg,framerate=(fraction)4/1')
         source.set_property('caps', source_caps)
 
         decoder = self.get_element("jpegdec")
@@ -197,10 +199,17 @@ class GstPythonVideoMaker(object):
         output = self.get_element("filesink")
         output.set_property('location', output_file)
 
-        pipeline.add_many(source, decoder, encoder, container, output)
-        gst.element_link_many(source, decoder, encoder, container, output)
+        pipeline.add(source)
+        pipeline.add(decoder)
+        pipeline.add(encoder)
+        pipeline.add(container)
+        pipeline.add(output)
+        source.link(decoder)
+        decoder.link(encoder)
+        encoder.link(container)
+        container.link(output)
 
-        pipeline.set_state(gst.STATE_PLAYING)
+        pipeline.set_state(Gst.State.PLAYING)
         while True:
             if source.get_property('index') <= no_files:
                 if self.verbose:
@@ -210,7 +219,7 @@ class GstPythonVideoMaker(object):
             else:
                 break
         time.sleep(3)
-        pipeline.set_state(gst.STATE_NULL)
+        pipeline.set_state(Gst.State.NULL)
 
 
 def video_maker(input_dir, output_file):
