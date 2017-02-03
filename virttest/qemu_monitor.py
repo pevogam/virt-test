@@ -187,8 +187,9 @@ class Monitor:
         try:
             self._socket.connect(filename)
         except socket.error, details:
+            vm_name = "" if not hasattr(self.vm, "name") else self.vm.name
             raise MonitorConnectError("Could not connect to monitor (%s-%s) "
-                                      "socket: %s" % (name, vm.name, details))
+                                      "socket: %s" % (name, vm_name, details))
 
     def __del__(self):
         # Automatically close the connection when the instance is garbage
@@ -278,8 +279,9 @@ class Monitor:
         :param extra_str: Extra string would be printed in log.
         """
         if self.debug_log or debug:
+            vm_name = "" if not hasattr(self.vm, "name") else self.vm.name
             logging.debug("(monitor %s-%s) Sending command '%s' %s",
-                          self.name, self.vm.name, cmd, extra_str)
+                          self.name, vm_name, cmd, extra_str)
 
     def _log_lines(self, log_str):
         """
