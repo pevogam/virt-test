@@ -915,8 +915,7 @@ def run_autotest(vm, session, control_path, timeout,
         tar_cmds = "--use-compress-program=pbzip2 -cvf"
     else:
         tar_cmds = "cvjf"
-    cmd = ("cd %s; tar %s %s %s/*" %
-           (autotest_parentdir, tar_cmds, compressed_autotest_path, autotest_basename))
+    cmd = ("cd %s; tar %s %s" % (autotest_parentdir, tar_cmds, compressed_autotest_path))
     cmd += " --exclude=%s/results*" % autotest_basename
     cmd += " --exclude=%s/tmp" % autotest_basename
     cmd += " --exclude=%s/control*" % autotest_basename
@@ -924,6 +923,7 @@ def run_autotest(vm, session, control_path, timeout,
     cmd += " --exclude=*.svn"
     cmd += " --exclude=*.git"
     cmd += " --exclude=%s/tests/virt/*" % autotest_basename
+    cmd += " %s/*" % autotest_basename
     utils.run(cmd)
 
     # Copy autotest.tar.bz2
