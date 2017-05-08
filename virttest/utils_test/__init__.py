@@ -717,11 +717,23 @@ def run_autotest(vm, session, control_path, timeout,
             # temporary problem
             remote_hash = "0"
         if remote_hash != local_hash:
-            hash_differs = True
-            logging.debug("Copying %s to guest "
-                          "(remote hash: %s, local hash:%s)",
-                          basename, remote_hash, local_hash)
-            vm.copy_files_to(local_path, remote_path)
+            if remote_hash != "0":
+                logging.warning("Different autotest files detected on guest %s"
+                                " (remote hash: %s, local hash:%s,"
+                                " both dumped to your temp directory)",
+                                vm.name, remote_hash, local_hash)
+                tstamp = str(int(time.time()))
+                vm.copy_files_from(remote_path,
+                                   "%s-guest-%s" % (local_path, tstamp))
+                # on-host file is always expected to be present
+                utils.run("cp %s %s-host-%s" % (local_path, local_path, tstamp))
+            else:
+                # first time deployment is always allowed
+                hash_differs = True
+                logging.info("Copying %s to guest %s"
+                             " (remote hash: %s, local hash:%s)",
+                             basename, vm.name, remote_hash, local_hash)
+                vm.copy_files_to(local_path, remote_path)
         return hash_differs
 
     def extract(vm, remote_path, dest_dir):
