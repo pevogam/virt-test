@@ -4,25 +4,12 @@ from threading import Lock
 from autotest.client.shared import error
 
 
-class ParamNotFound(error.TestNAError):
-    pass
-
-
 class Params(collections.UserDict):
 
     """
     A dict-like object passed to every test.
     """
     lock = Lock()
-
-    def __getitem__(self, key):
-        """ overrides the error messages of missing params[$key] """
-        try:
-            return collections.UserDict.__getitem__(self, key)
-        except KeyError:
-            raise ParamNotFound("Mandatory parameter '%s' is missing. "
-                                "Check your cfg files for typos/mistakes" %
-                                key)
 
     def objects(self, key):
         """
