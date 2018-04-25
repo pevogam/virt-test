@@ -147,27 +147,54 @@ def unique(llist):
         return list(u.keys())
 
 
-def find_command(cmd):
+class CmdNotFoundError(Exception):
+
+    """
+    Indicates that the command was not found in the system after a search.
+
+    :param cmd: String with the command.
+    :param paths: List of paths where we looked after.
+    """
+
+    def __init__(self, cmd, paths):
+        super(CmdNotFoundError, self)
+        self.cmd = cmd
+        self.paths = paths
+
+    def __str__(self):
+        return ("Command '%s' could not be found in any of the PATH dirs: %s" %
+                (self.cmd, self.paths))
+
+
+def find_command(cmd, default=None):
     """
     Try to find a command in the PATH, paranoid version.
 
     :param cmd: Command to be found.
-    :raise: ValueError in case the command was not found.
+    :param default: Command path to use as a fallback if not found
+                    in the standard directories.
+    :raise: :class:`CmdNotFoundError` in case the
+            command was not found and no default was given.
     """
-    common_bin_paths = ["/usr/libexec", "/usr/local/sbin", "/usr/local/bin",
-                        "/usr/sbin", "/usr/bin", "/sbin", "/bin"]
     try:
         path_paths = os.environ['PATH'].split(":")
     except IndexError:
         path_paths = []
-    path_paths = unique(common_bin_paths + path_paths)
+
+    for common_path in ["/usr/libexec", "/usr/local/sbin", "/usr/local/bin",
+                        "/usr/sbin", "/usr/bin", "/sbin", "/bin"]:
+        if common_path not in path_paths:
+            path_paths.append(common_path)
 
     for dir_path in path_paths:
         cmd_path = os.path.join(dir_path, cmd)
         if os.path.isfile(cmd_path):
             return os.path.abspath(cmd_path)
 
-    raise ValueError('Missing command: %s' % cmd)
+    if default is not None:
+        return default
+    else:
+        raise CmdNotFoundError(cmd, path_paths)
 
 
 def pid_exists(pid):
@@ -183,16 +210,16 @@ def pid_exists(pid):
         return False
 
 
-def safe_kill(pid, signal):
+def safe_kill(pid, sig):
     """
     Attempt to send a signal to a given process that may or may not exist.
 
-    :param signal: Signal number.
+    :param sig: Signal number.
     """
     try:
-        os.kill(pid, signal)
+        os.kill(pid, sig)
         return True
-    except Exception:
+    except OSError:
         return False
 
 
@@ -206,11 +233,7 @@ def kill_process_tree(pid, sig=signal.SIGKILL):
     """
     if not safe_kill(pid, signal.SIGSTOP):
         return
-    try:
-        children = subprocess.check_output(("ps", "--ppid=%d" % pid, "-o", "pid="),
-                                           shell=True).decode().split()
-    except subprocess.CalledProcessError:
-        children = []
+    children = utils.getoutput("ps --ppid=%d -o pid=" % pid).split()
     for child in children:
         kill_process_tree(int(child), sig)
     safe_kill(pid, sig)
@@ -238,10 +261,12 @@ def get_virt_test_open_fds():
 
 
 def process_or_children_is_defunct(ppid):
-    """Verify if any processes from PPID is defunct.
+    """
+    Verify if any processes deriving from PPID are in the defunct state.
 
     Attempt to verify if parent process and any children from PPID is defunct
     (zombie) or not.
+
     :param ppid: The parent PID of the process to verify.
     """
     defunct = False
@@ -251,7 +276,7 @@ def process_or_children_is_defunct(ppid):
         return True
     for pid in pids:
         cmd = "ps --no-headers -o cmd %d" % int(pid)
-        proc_name = utils.system_output(cmd, ignore_status=True)
+        proc_name = utils.getoutput(cmd)
         if '<defunct>' in proc_name:
             defunct = True
             break
@@ -421,32 +446,35 @@ def get_path(base_path, user_path):
         return os.path.join(base_path, user_path)
 
 
-def generate_random_string(length, ignore_str=string.punctuation,
-                           convert_str=""):
+def generate_random_string(length, ignore=string.punctuation,
+                           convert=""):
     """
-    Return a random string using alphanumeric characters.
+    Generate a random string using alphanumeric characters.
 
     :param length: Length of the string that will be generated.
-    :param ignore_str: Characters that will not include in generated string.
-    :param convert_str: Characters that need to be escaped (prepend "\\").
+    :type length: int
+    :param ignore: Characters that will not include in generated string.
+    :type ignore: str
+    :param convert: Characters that need to be escaped (prepend "\\").
+    :type convert: str
 
     :return: The generated random string.
     """
     r = random.SystemRandom()
-    sr = ""
+    result = ""
     chars = string.ascii_letters + string.digits + string.punctuation
-    if not ignore_str:
-        ignore_str = ""
-    for i in ignore_str:
+    if not ignore:
+        ignore = ""
+    for i in ignore:
         chars = chars.replace(i, "")
 
     while length > 0:
         tmp = r.choice(chars)
-        if convert_str and (tmp in convert_str):
+        if convert and (tmp in convert):
             tmp = "\\%s" % tmp
-        sr += tmp
+        result += tmp
         length -= 1
-    return sr
+    return result
 
 
 def generate_random_id():
@@ -500,17 +528,17 @@ def wait_for(func, timeout, first=0.0, step=1.0, text=None):
 
     :param timeout: Timeout in seconds
     :param first: Time to sleep before first attempt
-    :param steps: Time to sleep between attempts in seconds
+    :param step: Time to sleep between attempts in seconds
     :param text: Text to print while waiting, for debug purposes
     """
     start_time = time.time()
-    end_time = time.time() + float(timeout)
+    end_time = time.time() + timeout
 
     time.sleep(first)
 
     while time.time() < end_time:
         if text:
-            logging.debug("%s (%f secs)", text, (time.time() - start_time))
+            log.debug("%s (%f secs)", text, (time.time() - start_time))
 
         output = func()
         if output:
@@ -1063,7 +1091,7 @@ def strip_console_codes(output, custom_codes=None):
     :param custom_codes: The codes added to the console codes which is not
                          covered in the default codes
     :type output: string
-    :return: the string wihout any special codes
+    :return: the string without any special codes
     :rtype: string
     """
     if "\x1b" not in output:
@@ -1073,8 +1101,8 @@ def strip_console_codes(output, custom_codes=None):
     return_str = ""
     index = 0
     output = "\x1b[m%s" % output
-    console_codes = "%[G@8]|\[[@A-HJ-MPXa-hl-nqrsu\`]"
-    console_codes += "|\[[\d;]+[HJKgqnrm]|#8|\([B0UK]|\)|\[\d+S"
+    console_codes = "%[G@8]|\\[[@A-HJ-MPXa-hl-nqrsu\\`]"
+    console_codes += "|\\[[\\d;]+[HJKgqnrm]|#8|\\([B0UK]|\\)"
     if custom_codes is not None and custom_codes not in console_codes:
         console_codes += "|%s" % custom_codes
     while index < len(output):
