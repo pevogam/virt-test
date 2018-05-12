@@ -208,19 +208,6 @@ class Monitor:
         finally:
             self._log_lock.release()
 
-    # The following two functions are defined to make sure the state is set
-    # exclusively by the constructor call as specified in __getinitargs__().
-    def __getstate__(self):
-        pass
-
-    def __setstate__(self, state):
-        pass
-
-    def __getinitargs__(self):
-        # Save some information when pickling -- will be passed to the
-        # constructor upon unpickling
-        return self.vm, self.name, self.filename, True
-
     def _close_sock(self):
         try:
             self._socket.shutdown(socket.SHUT_RDWR)
@@ -605,6 +592,9 @@ class HumanMonitor(Monitor):
                 logging.warn(e)
             else:
                 raise
+
+    def __reduce__(self):
+        return (HumanMonitor, (self.vm, self.name, self.filename, True))
 
     # Private methods
     def _read_up_to_qemu_prompt(self, timeout=PROMPT_TIMEOUT):
@@ -1206,6 +1196,9 @@ class QMPMonitor(Monitor):
                 logging.warn(e)
             else:
                 raise
+
+    def __reduce__(self):
+        return (QMPMonitor, (self.vm, self.name, self.filename, True))
 
     # Private methods
     def _build_cmd(self, cmd, args=None, q_id=None):
