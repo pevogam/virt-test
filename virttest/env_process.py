@@ -10,24 +10,24 @@ import sys
 import copy
 from autotest.client import utils
 from autotest.client import os_dep
-from autotest.client.shared import error
-import aexpect
-import qemu_monitor
-import ppm_utils
-import test_setup
-import virt_vm
-import video_maker
-import utils_misc
-import storage
-import qemu_storage
-import utils_libvirtd
-import remote
-import data_dir
-import utils_net
-import utils_disk
-import nfs
-import libvirt_vm
 from autotest.client import local_host
+from autotest.client.shared import error
+from . import aexpect
+from . import qemu_monitor
+from . import ppm_utils
+from . import test_setup
+from . import virt_vm
+from . import video_maker
+from . import utils_misc
+from . import storage
+from . import qemu_storage
+from . import utils_libvirtd
+from . import remote
+from . import data_dir
+from . import utils_net
+from . import utils_disk
+from . import nfs
+from . import libvirt_vm
 
 import state_setup
 

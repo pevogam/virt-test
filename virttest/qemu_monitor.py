@@ -11,14 +11,14 @@ import logging
 import select
 import re
 import os
-import utils_misc
-import passfd_setup
-from autotest.client.shared import utils
 try:
     import json
 except ImportError:
     logging.warning("Could not import json module. "
                     "QMP monitor functionality disabled.")
+from autotest.client.shared import utils
+from . import utils_misc
+from . import passfd_setup
 
 
 class MonitorError(Exception):

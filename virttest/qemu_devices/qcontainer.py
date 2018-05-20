@@ -10,16 +10,16 @@ interact and verify the qemu qdev structure.
 # Python imports
 import logging
 import re
+import os
+import shutil
 
 # Autotest imports
 from autotest.client.shared import utils, error
-from virttest import arch, storage, data_dir, virt_vm
-from utils import (DeviceError, DeviceHotplugError, DeviceInsertError,
-                   DeviceRemoveError, DeviceUnplugError, none_or_int)
-import os
-import qbuses
-import qdevices
-import shutil
+from .. import arch, storage, data_dir, virt_vm
+from . import qbuses
+from . import qdevices
+from .utils import (DeviceError, DeviceHotplugError, DeviceInsertError,
+                    DeviceRemoveError, DeviceUnplugError, none_or_int)
 
 
 #

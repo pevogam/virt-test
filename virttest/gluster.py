@@ -10,11 +10,11 @@ import logging
 import os
 import re
 import shutil
-from autotest.client.shared import utils, error
-import data_dir
-import utils_misc
-import utils_net
 import socket
+from autotest.client.shared import utils, error
+from . import data_dir
+from . import utils_misc
+from . import utils_net
 
 
 class GlusterError(Exception):

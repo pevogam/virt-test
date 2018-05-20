@@ -11,9 +11,9 @@ import logging
 import select
 import pickle
 import time
-import remote_interface
 import io
 import base64
+from . import remote_interface
 
 
 class IOWrapper(object):

@@ -7,11 +7,11 @@ import re
 import sys
 
 # Import backported modules
-import simplejson
+from . import simplejson
 import collections
 import itertools
 if not hasattr(itertools, 'product'):
-    import _itertools
+    from . import _itertools
     itertools.product = _itertools.product
 
 # pylint: disable=I0011,W0622

@@ -51,7 +51,6 @@ from virttest.libvirt_xml.devices import hostdev
 from virttest.libvirt_xml.devices import controller
 from virttest.libvirt_xml.devices import seclabel
 from virttest.libvirt_xml.devices import channel
-from __init__ import ping
 try:
     from autotest.client import lv_utils
 except ImportError:
@@ -1312,6 +1311,7 @@ def check_iface(iface_name, checkpoint, extra="", **dargs):
             # extra is the ping destination
             count = dargs.get("count", 3)
             timeout = dargs.get("timeout", 5)
+            from .__init__ import ping
             ping_s, _ = ping(dest=extra, count=count, interface=iface_name,
                              timeout=timeout,)
             check_pass = ping_s == 0

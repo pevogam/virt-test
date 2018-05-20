@@ -2,9 +2,9 @@ import os
 import logging
 import signal
 import threading
-import aexpect
 import queue
-from virttest import utils_misc
+from . import utils_misc
+from . import aexpect
 
 
 class GDBError(Exception):

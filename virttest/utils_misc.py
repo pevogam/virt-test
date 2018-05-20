@@ -25,11 +25,11 @@ import threading
 from autotest.client import utils, os_dep
 from autotest.client.shared import error, logging_config
 from autotest.client.shared import git, base_job
-import data_dir
-import cartesian_config
-import utils_selinux
+from . import data_dir
+from . import cartesian_config
+from . import utils_selinux
 try:
-    from staging import utils_koji
+    from .staging import utils_koji
 except ImportError:
     from autotest.client.shared import utils_koji
 

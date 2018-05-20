@@ -12,7 +12,7 @@ import os
 import re
 from autotest.client.shared import utils
 from autotest.client.shared import error
-import utils_misc
+from . import utils_misc
 
 
 class CephError(Exception):

@@ -25,10 +25,10 @@ import os
 import re
 import math
 import logging
-import utils_misc
 from autotest.client import os_dep
 from autotest.client.shared import error
 from autotest.client.shared import utils
+from . import utils_misc
 
 
 UNIT = "B"

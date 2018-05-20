@@ -1,11 +1,11 @@
 import urllib
 import logging
 import os
+import re
 import glob
 from autotest.client import utils, test_config
 from autotest.client.shared import git, error
-import data_dir
-import re
+from . import data_dir
 
 
 def get_known_backends():

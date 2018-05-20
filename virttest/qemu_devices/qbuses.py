@@ -7,8 +7,7 @@ or match the autotest params into qemu qdev structure.
 :copyright: 2012-2013 Red Hat Inc.
 """
 # Autotest imports
-import qdevices
-from utils import none_or_int
+from .utils import none_or_int
 
 
 #
@@ -79,8 +78,9 @@ class QSparseBus(object):
         :return: First matching object from this bus
         :raise KeyError: In case no match was found
         """
-        if isinstance(item, qdevices.QBaseDevice):
-            if item in self.bus.itervalues():
+        from . import qdevices as qdevs
+        if isinstance(item, qdevs.QBaseDevice):
+            if item in self.bus.values():
                 return item
         else:
             for device in self.bus.values():
@@ -114,8 +114,9 @@ class QSparseBus(object):
         :param item: autotest id or QObject-like object
         :return: True - yes, False - no
         """
-        if isinstance(item, qdevices.QBaseDevice):
-            if item in self.bus.itervalues():
+        from . import qdevices as qdevs
+        if isinstance(item, qdevs.QBaseDevice):
+            if item in self.bus.values():
                 return True
         else:
             for device in self:
@@ -667,13 +668,14 @@ class QPCISwitchBus(QPCIBus):
             bus_id = "%s.%s" % (self.busid, int(addr, 16))
             bus = QPCIBus(bus_id, 'PCIE', bus_id)
             self.__downstream_ports[addr] = bus
-            downstream = qdevices.QDevice(self.__downstream_type,
-                                          {'id': bus_id,
-                                           'bus': self.busid,
-                                           'addr': addr},
-                                          aobject=self.aobject,
-                                          parent_bus={'busid': '_PCI_CHASSIS'},
-                                          child_bus=bus)
+            from . import qdevices as qdevs
+            downstream = qdevs.QDevice(self.__downstream_type,
+                                       {'id': bus_id,
+                                        'bus': self.busid,
+                                        'addr': addr},
+                                       aobject=self.aobject,
+                                       parent_bus={'busid': '_PCI_CHASSIS'},
+                                       child_bus=bus)
             return downstream
 
     def _insert(self, device, addr):

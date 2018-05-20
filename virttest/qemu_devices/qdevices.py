@@ -9,13 +9,13 @@ interact with qemu qdev structure.
 # Python imports
 import logging
 import re
+import traceback
 
 # Autotest imports
-from utils import DeviceError
-from virttest import qemu_monitor
-from virttest import utils_misc
-import qbuses
-import traceback
+from .. import qemu_monitor
+from .. import utils_misc
+from . import qbuses
+from .utils import DeviceError
 
 try:
     # pylint: disable=E0611

@@ -1,5 +1,5 @@
 import platform
-from virttest import utils_misc
+from . import utils_misc
 
 ARCH = platform.machine()
 

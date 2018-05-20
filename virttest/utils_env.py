@@ -3,12 +3,12 @@ import collections
 import os
 import logging
 import re
-import utils_misc
-import virt_vm
-import aexpect
-import remote
 import threading
 from autotest.client.shared import error
+from . import utils_misc
+from . import virt_vm
+from . import aexpect
+from . import remote
 
 ENV_VERSION = 1
 

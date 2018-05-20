@@ -3,13 +3,14 @@ Module to control libvirtd service.
 """
 import re
 import logging
-import aexpect
 
-from virttest import remote, utils_misc
 from autotest.client import utils, os_dep
 from autotest.client.shared import error
-from virttest.staging import service
-from virttest.utils_gdb import GDB
+
+from . import aexpect
+from . import remote, utils_misc
+from .staging import service
+from .utils_gdb import GDB
 
 
 try:

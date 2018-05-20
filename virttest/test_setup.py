@@ -8,15 +8,15 @@ import re
 import random
 import math
 import shutil
-from virttest.staging import service
+from .staging import service
 from autotest.client.shared import error, utils
-import data_dir
-import utils_misc
-import versionable_class
-import openvswitch
+from . import data_dir
+from . import utils_misc
+from . import versionable_class
+from . import openvswitch
 
 try:
-    from virttest.staging import utils_memory
+    from .staging import utils_memory
 except ImportError:
     # pylint: disable=E0611
     from autotest.client import utils_memory

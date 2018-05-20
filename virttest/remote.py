@@ -7,16 +7,14 @@ import re
 import os
 import shutil
 import tempfile
-import aexpect
-import utils_misc
-import rss_client
-
-from remote_commander import remote_master
-from remote_commander import messenger
-
 from autotest.client.shared import error
 from autotest.client import utils
-import data_dir
+from . import data_dir
+from . import aexpect
+from . import utils_misc
+from . import rss_client
+from .remote_commander import remote_master
+from .remote_commander import messenger
 
 
 class LoginError(Exception):

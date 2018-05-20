@@ -38,9 +38,9 @@ from virttest import storage, asset, bootstrap, remote
 import virttest
 
 # Import submodules, should not be considered as unused import
-import libvirt
-import qemu
-import libguestfs
+from . import libvirt
+from . import qemu
+from . import libguestfs
 
 try:
     from virttest.staging import utils_memory

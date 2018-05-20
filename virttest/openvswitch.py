@@ -8,8 +8,8 @@ except ImportError:
     import common
 from autotest.client import utils, os_dep
 from autotest.client.shared import error
-from versionable_class import VersionableClass, Manager, factory
-import utils_misc
+from .versionable_class import VersionableClass, Manager, factory
+from . import utils_misc
 
 # Register to class manager.
 man = Manager(__name__)

@@ -13,7 +13,7 @@ import glob
 import shutil
 import sys
 import logging
-import ppm_utils
+from . import ppm_utils
 pygtk.require('2.0')
 
 

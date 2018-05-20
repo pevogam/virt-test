@@ -15,11 +15,11 @@ try:
 except ImportError:
     from autotest.client.shared import iscsi
 
-import utils_misc
-import virt_vm
-import gluster
-import lvm
-import ceph
+from . import utils_misc
+from . import virt_vm
+from . import gluster
+from . import lvm
+from . import ceph
 
 
 def preprocess_images(bindir, params, env):

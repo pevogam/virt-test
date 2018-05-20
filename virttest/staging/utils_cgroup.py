@@ -16,8 +16,8 @@ import random
 from tempfile import mkdtemp
 from autotest.client import utils
 from autotest.client.shared import error
-from virttest import utils_misc
-import service
+from .. import utils_misc
+from . import service
 
 
 class Cgroup(object):

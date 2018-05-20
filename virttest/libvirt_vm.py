@@ -14,16 +14,16 @@ import shutil
 import tempfile
 from autotest.client.shared import error
 from autotest.client import utils
-import utils_misc
-import virt_vm
-import storage
-import aexpect
-import remote
-import virsh
-import libvirt_xml
-import data_dir
-import xml_utils
-import utils_selinux
+from . import utils_misc
+from . import virt_vm
+from . import storage
+from . import aexpect
+from . import remote
+from . import virsh
+from . import libvirt_xml
+from . import data_dir
+from . import xml_utils
+from . import utils_selinux
 
 
 def normalize_connect_uri(connect_uri):

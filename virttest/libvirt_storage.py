@@ -11,8 +11,8 @@ import re
 import logging
 import time
 from autotest.client.shared import error
-import storage
-import virsh
+from . import storage
+from . import virsh
 
 
 class QemuImg(storage.QemuImg):

@@ -1,4 +1,3 @@
-import openvswitch
 import re
 import os
 import socket
@@ -12,11 +11,13 @@ import shelve
 import subprocess
 from autotest.client import utils, os_dep
 from autotest.client.shared import error
-import propcan
-import utils_misc
-import arch
-import aexpect
-from versionable_class import factory
+from . import remote
+from . import openvswitch
+from . import propcan
+from . import utils_misc
+from . import arch
+from . import aexpect
+from .versionable_class import factory
 
 CTYPES_SUPPORT = True
 try:

@@ -5,7 +5,6 @@ Interfaces and helpers for the virtio_serial ports.
 """
 from threading import Thread
 from collections import deque
-import aexpect
 import logging
 import os
 import random
@@ -13,7 +12,8 @@ import select
 import socket
 import time
 from autotest.client.shared import error, utils
-import data_dir
+from . import aexpect
+from . import data_dir
 
 
 SOCKET_SIZE = 2048

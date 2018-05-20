@@ -4,15 +4,15 @@ import glob
 import os
 import re
 import socket
+import traceback
+import copy
 from autotest.client import utils
 from autotest.client.shared import error
-import utils_misc
-import utils_net
-import remote
-import traceback
-import ppm_utils
-import data_dir
-import copy
+from . import utils_misc
+from . import utils_net
+from . import remote
+from . import ppm_utils
+from . import data_dir
 
 
 class VMError(Exception):
@@ -543,17 +543,17 @@ class BaseVM(object):
     @staticmethod
     def lookup_vm_class(vm_type, target):
         if vm_type == 'qemu':
-            import qemu_vm
+            from . import qemu_vm
             return qemu_vm.VM
         if vm_type == 'libvirt':
-            import libvirt_vm
+            from . import libvirt_vm
             return libvirt_vm.VM
         if vm_type == 'v2v':
             if target == 'libvirt' or target is None:
-                import libvirt_vm
+                from . import libvirt_vm
                 return libvirt_vm.VM
             if target == 'ovirt':
-                import ovirt
+                from . import ovirt
                 return ovirt.VMManager
 
     #

@@ -5,13 +5,13 @@ import shutil
 import sys
 from autotest.client.shared import logging_manager, error
 from autotest.client import utils
-import utils_misc
-import data_dir
-import asset
-import cartesian_config
-import utils_selinux
-import defaults
-import arch
+from . import utils_misc
+from . import data_dir
+from . import asset
+from . import cartesian_config
+from . import utils_selinux
+from . import defaults
+from . import arch
 
 basic_program_requirements = ['7za', 'tcpdump', 'nc', 'ip', 'arping']
 

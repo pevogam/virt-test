@@ -12,18 +12,18 @@ import re
 import subprocess
 from autotest.client.shared import error
 from autotest.client import utils
-from virttest.qemu_devices import qdevices, qcontainer
-import utils_misc
-import virt_vm
-import test_setup
-import qemu_monitor
-import aexpect
-import qemu_virtio_port
-import remote
-import data_dir
-import utils_net
-import arch
-import storage
+from .qemu_devices import qdevices, qcontainer
+from . import utils_misc
+from . import virt_vm
+from . import test_setup
+from . import qemu_monitor
+from . import aexpect
+from . import qemu_virtio_port
+from . import remote
+from . import data_dir
+from . import utils_net
+from . import arch
+from . import storage
 
 
 class QemuSegFaultError(virt_vm.VMError):

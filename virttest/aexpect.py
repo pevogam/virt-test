@@ -270,7 +270,7 @@ import signal
 import re
 import threading
 import logging
-import utils_misc
+from . import utils_misc
 
 
 class ExpectError(Exception):

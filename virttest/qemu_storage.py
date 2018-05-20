@@ -10,10 +10,10 @@ import os
 import re
 from autotest.client.shared import error
 from autotest.client import utils
-import utils_misc
-import virt_vm
-import storage
-import data_dir
+from . import utils_misc
+from . import virt_vm
+from . import storage
+from . import data_dir
 
 
 class QemuImg(storage.QemuImg):
