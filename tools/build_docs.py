@@ -29,7 +29,7 @@ def build_docs():
         ignore_msg = False
         for ignore in ignore_list:
             if ignore in line:
-                print 'Expected warning ignored: %s' % line
+                print('Expected warning ignored: %s' % line)
                 ignore_msg = True
         if ignore_msg:
             continue
@@ -38,11 +38,11 @@ def build_docs():
         if 'WARNING' in line:
             failure_lines.append(line)
     if failure_lines:
-        print ('%s ERRORs/WARNINGs detected while building the html docs:' %
-               len(failure_lines))
+        print('%s ERRORs/WARNINGs detected while building the html docs:' %
+              len(failure_lines))
         for (index, failure_line) in enumerate(failure_lines):
-            print "%s) %s" % (index + 1, failure_line)
-        print 'Please check the output and fix your docstrings/.rst docs'
+            print("%s) %s" % (index + 1, failure_line))
+        print('Please check the output and fix your docstrings/.rst docs')
         sys.exit(1)
     else:
         sys.exit(0)

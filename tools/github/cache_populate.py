@@ -11,7 +11,7 @@ gh = Github(login_or_token=raw_input("Enter github username: "),
             password=getpass.getpass('Enter github password: '),
             user_agent='PyGithub/Python')
 
-print "Enter location (<user>/<repo>)",
+print("Enter location (<user>/<repo>)", end='')
 repo_full_name = 'autotest/virt-test'
 repo_full_name = raw_input("or blank for '%s': "
                            % repo_full_name).strip() or repo_full_name

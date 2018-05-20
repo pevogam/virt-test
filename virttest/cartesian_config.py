@@ -220,7 +220,7 @@ def _might_match_adjacent(block, ctx, ctx_set, descendant_labels):
     matched = _match_adjacent(block, ctx, ctx_set)
     for elem in block[matched:]:        # Try to find rest of blocks in subtree
         if elem not in descendant_labels:
-            # print "Can't match %s, ctx %s" % (block, ctx)
+            # print("Can't match %s, ctx %s" % (block, ctx))
             return False
     return True
 
@@ -231,7 +231,7 @@ class Filter(object):
 
     def __init__(self, lfilter):
         self.filter = lfilter
-        # print self.filter
+        # print(self.filter)
 
     def match(self, ctx, ctx_set):
         for word in self.filter:  # Go through ,
@@ -239,7 +239,7 @@ class Filter(object):
                 if _match_adjacent(block, ctx, ctx_set) != len(block):
                     break
             else:
-                # print "Filter pass: %s ctx: %s" % (self.filter, ctx)
+                # print("Filter pass: %s ctx: %s" % (self.filter, ctx))
                 return True       # All match
         return False
 
@@ -252,7 +252,7 @@ class Filter(object):
                     break
             else:
                 return True
-        # print "Filter not pass: %s ctx: %s" % (self.filter, ctx)
+        # print("Filter not pass: %s ctx: %s" % (self.filter, ctx))
         return False
 
 
@@ -1932,24 +1932,24 @@ def print_dicts_default(options, dicts):
     for count, dic in enumerate(dicts):
         postfix_parse(dic)
         if options.fullname:
-            print "dict %4d:  %s" % (count + 1, dic["name"])
+            print("dict %4d:  %s" % (count + 1, dic["name"]))
         else:
-            print "dict %4d:  %s" % (count + 1, dic["shortname"])
+            print("dict %4d:  %s" % (count + 1, dic["shortname"]))
         if options.contents:
             keys = dic.keys()
             keys.sort()
             for key in keys:
-                print "    %s = %s" % (key, dic[key])
+                print("    %s = %s" % (key, dic[key]))
 
 
 # pylint: disable=W0613
 def print_dicts_repr(options, dicts):
     import pprint
-    print "["
+    print("[")
     for dic in dicts:
         postfix_parse(dic)
-        print "%s," % (pprint.pformat(dic))
-    print "]"
+        print("%s," % (pprint.pformat(dic)))
+    print("]")
 
 
 def print_dicts(options, dicts):

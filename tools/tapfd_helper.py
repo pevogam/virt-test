@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     tap_list = re.findall(tap_list_re, cmd_line)
     if not tap_list:
-        print "Could not find tap device."
+        print("Could not find tap device.")
         sys.exit(1)
 
     tapfd_list = []
@@ -55,7 +55,7 @@ if __name__ == "__main__":
             tapfd_list.append(tapfd)
         except Exception, e:
             destroy_tap(tapfd_list)
-            print "Error: %s" % e
+            print("Error: %s" % e)
             sys.exit(2)
 
     try:

@@ -36,7 +36,7 @@ class VM(object):
         super(VM, self).__init__(*args, **kargs)
 
     def fn1(self):
-        print "fn1_VM"
+        print("fn1_VM")
 
 
 
@@ -49,7 +49,7 @@ class VM1(VM):
         super(VM1, self).__init__(*args, **kargs)
 
     def fn1(self):
-        print "fn1_VM1"
+        print("fn1_VM1")
 
 class VM_container(test_vers.VersionableClass):
     __master__ = VM1
@@ -105,7 +105,7 @@ class VM(object):
 
 
     def func1(self):
-        print "VM_func1"
+        print("VM_func1")
 
 
     def func3(self):
@@ -141,7 +141,7 @@ class VM1(VM):
 
 
     def func2(self):
-        print "func2"
+        print("func2")
 
 
     def func3(self):

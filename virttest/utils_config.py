@@ -65,12 +65,12 @@ class SectionlessConfig(object):
     >>> from virttest import utils_config
     >>> config = utils_config.SectionlessConfig('test.conf')
     >>> try:
-    ...     print len(config)
-    ...     print config
-    ...     print config['a']
+    ...     print(len(config))
+    ...     print(config)
+    ...     print(config['a'])
     ...     del config['a']
     ...     config['f'] = 'test'
-    ...     print config
+    ...     print(config)
     ... finally:
     ...     config.restore()
 
@@ -78,12 +78,12 @@ class SectionlessConfig(object):
 
     >>> from virttest import utils_config
     >>> with utils_config.SectionlessConfig('test.conf') as config:
-    ...     print len(config)
-    ...     print config
-    ...     print config['a']
+    ...     print(len(config))
+    ...     print(config)
+    ...     print(config['a'])
     ...     del config['a']
     ...     config['f'] = 'test'
-    ...     print config
+    ...     print(config)
     """
 
     def __init__(self, path):
@@ -235,7 +235,7 @@ class LibvirtConfigCommon(SectionlessConfig):
 
     3) Get an option:
     >>> is_listening = config.listen_tcp
-    >>> print is_listening
+    >>> print(is_listening)
     True
 
     4) Delete an option from the config file:

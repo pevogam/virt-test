@@ -302,5 +302,5 @@ class Messenger(object):
             raise
         # Debugging commands.
         # if (isinstance(data, remote_interface.BaseCmd)):
-        #    print data.func
+        #    print(data.func)
         return (True, data)

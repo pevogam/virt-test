@@ -45,7 +45,7 @@ class VM(object):
         return "%s" % self.cls
 
     def func1(self):
-        print "VM_func1"
+        print("VM_func1")
 
     def func3(self):
         pass
@@ -78,7 +78,7 @@ class VM1(VM):
         super(VM1, self).func1()
 
     def func2(self):
-        print "func2"
+        print("func2")
 
     def func3(self):
         pass

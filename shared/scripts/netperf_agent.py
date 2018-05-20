@@ -8,12 +8,12 @@ import sys
 import time
 
 if len(sys.argv) < 4:
-    print """ netperf agent usage:
+    print(""" netperf agent usage:
     %s [session_number] [netperf_path] [netperf_parameters_str]
 
     $session_number: number of client sessions
     $netperf_path: client path
-    $netperf_parameter_str: netperf parameters string""" % sys.argv[0]
+    $netperf_parameter_str: netperf parameters string""" % sys.argv[0])
     sys.exit()
 
 n = int(sys.argv[1])
