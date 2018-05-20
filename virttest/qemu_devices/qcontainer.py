@@ -132,7 +132,7 @@ class DevContainer(object):
         """
         out = []
         for device in self.__devices:
-            for key, value in filt.iteritems():
+            for key, value in filt.items():
                 if not hasattr(device, key):
                     break
                 if getattr(device, key) != value:
@@ -149,7 +149,7 @@ class DevContainer(object):
         """
         out = []
         for device in self.__devices:
-            for key, value in filt.iteritems():
+            for key, value in filt.items():
                 if key not in device.params:
                     break
                 if device.params[key] != value:
@@ -253,7 +253,7 @@ class DevContainer(object):
 
         # state, buses and devices are handled earlier
         qdev2 = qdev2.__dict__
-        for key, value in self.__dict__.iteritems():
+        for key, value in self.__dict__.items():
             if key in ("_DevContainer__devices", "_DevContainer__buses",
                        "_DevContainer__state",
                        "allow_hotplugged_vm"):
@@ -650,7 +650,7 @@ class DevContainer(object):
         """
         if "%s" not in bus_pattern:
             bus_pattern = bus_pattern + "%s"
-        missing_buses = [bus_pattern % i for i in xrange(bus_count)]
+        missing_buses = [bus_pattern % i for i in range(bus_count)]
         for bus in self.__buses:
             if bus.type == bus_type and re.match(bus_pattern % '\d+',
                                                  bus.busid):
@@ -980,7 +980,7 @@ class DevContainer(object):
         if usb_type == "ich9-usb-ehci1":
             usb.set_param('addr', '1d.7')
             usb.set_param('multifunction', 'on')
-            for i in xrange(3):
+            for i in range(3):
                 new_usbs.append(qdevices.QDevice('ich9-usb-uhci%d' % (i + 1), {},
                                                  usb_id))
                 new_usbs[-1].parent_bus = {'aobject': pci_bus}

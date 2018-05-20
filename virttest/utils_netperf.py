@@ -378,7 +378,7 @@ class NetperfClient(Netperf):
                 txt = "Start %s sessions netperf background" % session_num
                 txt += " with cmd: '%s' " % cmd
                 logging.info(txt)
-                for num in xrange(int(session_num)):
+                for num in range(int(session_num)):
                     self.session.cmd_output_safe("%s &" % cmd)
         else:
             if self.client == "nc":
@@ -388,7 +388,7 @@ class NetperfClient(Netperf):
             txt = "Start %s sessions netperf background" % session_num
             txt += " with cmd: '%s' " % netperf_cmd
             logging.info(txt)
-            for num in xrange(int(session_num)):
+            for num in range(int(session_num)):
                 self.session.cmd_output_safe("%s &" % netperf_cmd)
 
     def is_netperf_running(self):

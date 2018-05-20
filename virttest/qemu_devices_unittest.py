@@ -46,7 +46,7 @@ class ParamsDict(dict):
 
     def object_params(self, obj):
         ret = self.copy()
-        for (param, value) in self.iteritems():
+        for (param, value) in self.items():
             if param.endswith('_%s' % obj):
                 ret[param[:-len('_%s' % obj)]] = value
         return ret
@@ -752,7 +752,7 @@ fdc
                             "\n%s\n%s" % (qdev, qdev2))
         self.assertNotEqual(qdev2, qdev, "Empty qdev matches current one:"
                             "\n%s\n%s" % (qdev, qdev2))
-        for _ in xrange(10):
+        for _ in range(10):
             qdev2.insert(qdevice())
         self.assertNotEqual(qdev, qdev2, "This qdev matches different one:"
                             "\n%s\n%s" % (qdev, qdev2))
@@ -993,7 +993,7 @@ fdc
         self.assertEqual(bus3, out)
 
         # fill the first pci bus
-        for _ in xrange(32):
+        for _ in range(32):
             qdev.insert(qdevices.QDevice(parent_bus={'type': 'pci'}))
 
         # get_first_free_bus (last one is full, return the previous one)

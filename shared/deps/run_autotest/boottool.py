@@ -1234,7 +1234,7 @@ class Grubby(object):
                 with the title for the found entry, otherwise returns None
         """
         entries = self.get_entries()
-        for entry in entries.itervalues():
+        for entry in entries.values():
             if entry.get('kernel') == path:
                 return entry['title']
         return None

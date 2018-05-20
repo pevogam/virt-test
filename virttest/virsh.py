@@ -38,7 +38,7 @@ from virttest import remote
 
 # list of symbol names NOT to wrap as Virsh class methods
 # Everything else from globals() will become a method of Virsh class
-NOCLOSE = globals().keys() + [
+NOCLOSE = list(globals().keys()) + [
     'NOCLOSE', 'SCREENSHOT_ERROR_COUNT', 'VIRSH_COMMAND_CACHE',
     'VIRSH_EXEC', 'VirshBase', 'VirshClosure', 'VirshSession', 'Virsh',
     'VirshPersistent', 'VirshConnectBack', 'VIRSH_COMMAND_GROUP_CACHE',

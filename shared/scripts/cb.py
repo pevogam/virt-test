@@ -16,7 +16,7 @@ def return_nonrandom_str(length):
     finalstring = ""
     str_len = len(input_string)
 
-    for i in xrange(int(length)):
+    for i in range(int(length)):
         finalstring += input_string[i % str_len]
 
     return finalstring

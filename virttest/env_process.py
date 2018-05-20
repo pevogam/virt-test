@@ -464,7 +464,7 @@ def _process_images_parallel(image_func, test, params, vm_process_status=None):
                      2 * local_host.LocalHost().get_num_cpu())
     exit_event = threading.Event()
     threads = []
-    for i in xrange(no_threads):
+    for i in range(no_threads):
         imgs = images[i::no_threads]
         threads.append(_CreateImages(image_func, test, imgs, params,
                                      exit_event, vm_process_status))

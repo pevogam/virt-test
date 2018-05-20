@@ -1058,10 +1058,10 @@ class Lexer(object):
                         token = tokens_map[char]()
                     elif char == "\"":
                         chars = ""
-                        pos, char = li.next()
+                        pos, char = li.__next__()
                         while char != "\"":
                             chars += char
-                            pos, char = li.next()
+                            pos, char = li.__next__()
                         yield LString(chars)
                     elif char == "#":
                         break
@@ -1103,10 +1103,10 @@ class Lexer(object):
     def get_until_gen(self, end_tokens=None):
         if end_tokens is None:
             end_tokens = [LEndL]
-        token = self.generator.next()
+        token = self.generator.__next__()
         while type(token) not in end_tokens:
             yield token
-            token = self.generator.next()
+            token = self.generator.__next__()
         yield token
 
     def get_until(self, end_tokens=None):
@@ -1153,10 +1153,10 @@ class Lexer(object):
         return [x for x in self.get_until_gen(end_tokens) if type(x) != LWhite]
 
     def rest_line_gen(self):
-        token = self.generator.next()
+        token = self.generator.__next__()
         while type(token) != LEndL:
             yield token
-            token = self.generator.next()
+            token = self.generator.__next__()
 
     def rest_line(self):
         return [x for x in self.rest_line_gen()]
@@ -1166,12 +1166,12 @@ class Lexer(object):
 
     def rest_line_as_LString(self):
         self.rest_as_string = True
-        lstr = self.generator.next()
-        self.generator.next()
+        lstr = self.generator.__next__()
+        self.generator.__next__()
         return lstr
 
     def get_next_check(self, lType):
-        token = self.generator.next()
+        token = self.generator.__next__()
         if type(token) in lType:
             return type(token), token
         else:
@@ -1181,9 +1181,9 @@ class Lexer(object):
                               self.line, self.filename, self.linenum)
 
     def get_next_check_nw(self, lType):
-        token = self.generator.next()
+        token = self.generator.__next__()
         while type(token) == LWhite:
-            token = self.generator.next()
+            token = self.generator.__next__()
         if type(token) in lType:
             return type(token), token
         else:
@@ -1203,9 +1203,9 @@ class Lexer(object):
 
 
 def next_nw(gener):
-    token = gener.next()
+    token = gener.__next__()
     while type(token) == LWhite:
-        token = gener.next()
+        token = gener.__next__()
     return token
 
 
@@ -1229,8 +1229,8 @@ def parse_filter(lexer, tokens):
     """
     or_filters = []
     tokens = iter(tokens + [LEndL()])
-    typet, token = lexer.check_token(tokens.next(), [LIdentifier, LLRBracket,
-                                                     LEndL, LWhite])
+    typet, token = lexer.check_token(tokens.__next__(), [LIdentifier, LLRBracket,
+                                                         LEndL, LWhite])
     and_filter = []
     con_filter = []
     dots = 1
@@ -1284,16 +1284,16 @@ def parse_filter(lexer, tokens):
                                   " Identifier.", lexer.line, lexer.filename,
                                   lexer.linenum)
             dots = 1
-            token = tokens.next()
+            token = tokens.__next__()
             while type(token) == LWhite:
-                token = tokens.next()
+                token = tokens.__next__()
             typet, token = lexer.check_token(token, [LIdentifier,
                                                      LComa, LDot,
                                                      LLRBracket, LEndL])
             continue
-        typet, token = lexer.check_token(tokens.next(), [LIdentifier, LComa,
-                                                         LDot, LLRBracket,
-                                                         LEndL, LWhite])
+        typet, token = lexer.check_token(tokens.__next__(), [LIdentifier, LComa,
+                                                             LDot, LLRBracket,
+                                                             LEndL, LWhite])
     if and_filter:
         if con_filter:
             and_filter.append(con_filter)
@@ -1537,9 +1537,9 @@ class Parser(object):
                             name = [x for x in name[:-1]
                                     if type(x) == LIdentifier]
 
-                        token = lexer.generator.next()
+                        token = lexer.generator.__next__()
                         while type(token) == LWhite:
-                            token = lexer.generator.next()
+                            token = lexer.generator.__next__()
                         tokens = None
                         if type(token) != LEndL:
                             tokens = [token] + lexer.get_until([LEndL])

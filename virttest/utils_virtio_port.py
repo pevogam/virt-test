@@ -68,12 +68,12 @@ class VirtioPortTest(object):
             else:
                 params['virtio_port_spread'] = 0
 
-            for i in xrange(max(no_consoles, _no_consoles)):
+            for i in range(max(no_consoles, _no_consoles)):
                 name = "console-%d" % i
                 params['virtio_ports'] += " %s" % name
                 params['virtio_port_type_%s' % name] = "console"
 
-            for i in xrange(max(no_serialports, _no_serialports)):
+            for i in range(max(no_serialports, _no_serialports)):
                 name = "serialport-%d" % i
                 params['virtio_ports'] += " %s" % name
                 params['virtio_port_type_%s' % name] = "serialport"

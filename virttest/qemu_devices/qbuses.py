@@ -83,7 +83,7 @@ class QSparseBus(object):
             if item in self.bus.itervalues():
                 return item
         else:
-            for device in self.bus.itervalues():
+            for device in self.bus.values():
                 if device.get_aid() == item:
                     return device
         raise KeyError("Device %s is not in %s" % (item, self))
@@ -125,7 +125,7 @@ class QSparseBus(object):
 
     def __iter__(self):
         """ Iterate over all defined devices. """
-        return self.bus.itervalues()
+        return self.bus.values()
 
     def str_short(self):
         """ short string representation """
@@ -156,7 +156,7 @@ class QSparseBus(object):
     def _str_devices_long(self):
         """ long string representation of devices in the good bus """
         out = ""
-        for addr, dev in self.bus.iteritems():
+        for addr, dev in self.bus.items():
             out += '%s< %4s >%s\n  ' % ('-' * 15, addr,
                                         '-' * 15)
             if isinstance(dev, str):
@@ -230,7 +230,7 @@ class QSparseBus(object):
         last_addr = addr_pattern[:]
         if None in last_addr:  # Address is not fully specified
             use_reserved = False    # Use only free address
-            for i in xrange(len(last_addr)):
+            for i in range(len(last_addr)):
                 if last_addr[i] is None:
                     last_addr[i] = self.first_port[i]
         return last_addr, use_reserved
@@ -247,7 +247,7 @@ class QSparseBus(object):
         # init
         last_addr, use_reserved = self._set_first_addr(addr_pattern)
         # Check the addr_pattern ranges
-        for i in xrange(len(self.addr_lengths)):
+        for i in range(len(self.addr_lengths)):
             if (last_addr[i] < self.first_port[i] or
                     last_addr[i] >= self.addr_lengths[i]):
                 return False
@@ -281,7 +281,7 @@ class QSparseBus(object):
         """
         if self.bus_item:
             device.set_param(self.bus_item, self.busid)
-        for i in xrange(len(self.addr_items)):
+        for i in range(len(self.addr_items)):
             device.set_param(self.addr_items[i], addr[i])
 
     def _update_device_props(self, device, addr):
@@ -292,7 +292,7 @@ class QSparseBus(object):
         """
         if device.get_param(self.bus_item) is not None:
             device.set_param(self.bus_item, self.busid)
-        for i in xrange(len(self.addr_items)):
+        for i in range(len(self.addr_items)):
             if device.get_param(self.addr_items[i]) is not None:
                 device.set_param(self.addr_items[i], addr[i])
 
@@ -355,9 +355,9 @@ class QSparseBus(object):
         :param device: qdevices.QBaseDevice device
         :return: True when removed, False when the device wasn't found
         """
-        if device in self.bus.itervalues():
+        if device in self.bus.values():
             remove = None
-            for key, item in self.bus.iteritems():
+            for key, item in self.bus.items():
                 if item is device:
                     remove = key
                     break
@@ -392,7 +392,7 @@ class QSparseBus(object):
                 return False
             elif self.type == bus_spec['type']:
                 return True
-        for key, value in bus_spec.iteritems():
+        for key, value in bus_spec.items():
             if isinstance(value, (tuple, list)):
                 for val in value:
                     if self.__dict__.get(key, None) == val:

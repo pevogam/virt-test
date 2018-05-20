@@ -145,7 +145,7 @@ def unique(llist):
     except TypeError:
         return None
     else:
-        return u.keys()
+        return list(u.keys())
 
 
 def find_command(cmd):
@@ -585,7 +585,7 @@ def run_tests(parser, job):
             continue
         dependencies_satisfied = True
         for dep in param_dict.get("dep"):
-            for test_name in status_dict.keys():
+            for test_name in list(status_dict.keys()):
                 if dep not in test_name:
                     continue
                 # So the only really non-fatal state is WARN,

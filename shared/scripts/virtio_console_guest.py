@@ -430,7 +430,7 @@ class VirtioGuestPosix(VirtioGuest):
             data = ""
             while not self.exit_thread.isSet():
                 data = ""
-                for i in xrange(len(self.in_files)):
+                for i in range(len(self.in_files)):
                     if self.exit_thread.isSet():
                         break
                     desc = self.in_files[i]
@@ -449,11 +449,11 @@ class VirtioGuestPosix(VirtioGuest):
                             sys.stdout.write("Missing device, readerr %s\n"
                                              % inst)
                             _desc = desc
-                            for item in virt.files.iteritems():
+                            for item in virt.files.items():
                                 if item[1] == desc:
                                     path = item[0]
                                     break
-                            for item in virt.ports.iteritems():
+                            for item in virt.ports.items():
                                 if item[1]['path'] == path:
                                     name = item[0]
                                     break
@@ -468,7 +468,7 @@ class VirtioGuestPosix(VirtioGuest):
                                     pass
                             self.in_files[self.in_files.index(_desc)] = desc
                 if data != "":
-                    for i in xrange(len(self.out_files)):
+                    for i in range(len(self.out_files)):
                         if self.exit_thread.isSet():
                             break
                         desc = self.out_files[i]
@@ -494,11 +494,11 @@ class VirtioGuestPosix(VirtioGuest):
                                     sys.stdout.write("Missing device, writeerr"
                                                      " %s\n" % inst)
                                     _desc = desc
-                                    for item in virt.files.iteritems():
+                                    for item in virt.files.items():
                                         if item[1] == desc:
                                             path = item[0]
                                             break
-                                    for item in virt.ports.iteritems():
+                                    for item in virt.ports.items():
                                         if item[1]['path'] == path:
                                             name = item[0]
                                             break
@@ -787,7 +787,7 @@ class VirtioGuestPosix(VirtioGuest):
         :return: Array of descriptors.
         """
         opened = False
-        for i in xrange(attempts):
+        for i in range(attempts):
             try:
                 name = self.ports[in_file]["path"]
                 self.files[name] = os.open(name, os.O_RDWR)
@@ -839,7 +839,7 @@ class VirtioGuestPosix(VirtioGuest):
         self.exit_thread.clear()
 
         del self.threads[:]
-        for desc in self.files.itervalues():
+        for desc in self.files.values():
             os.close(desc)
         self.files.clear()
         print("PASS: All threads finished")
@@ -977,7 +977,7 @@ class VirtioGuestNt(VirtioGuest):
 
         # Check if all ports really exists
         remove = []
-        for item in self.ports.iteritems():
+        for item in self.ports.items():
             port = item[1]
             try:
                 hFile = win32file.CreateFile(port['path'], 0, 0, None,
@@ -1086,7 +1086,7 @@ class VirtioGuestNt(VirtioGuest):
         self.exit_thread.clear()
 
         del self.threads[:]
-        for desc in self.files.itervalues():
+        for desc in self.files.values():
             win32file.CloseHandle(desc)
         self.files.clear()
         print("PASS: All threads finished")

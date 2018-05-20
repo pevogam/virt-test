@@ -126,10 +126,10 @@ sd0: [not inserted]
 
         # verify, that booth representation gives the same results
         # (qemu-1.5 is less informative so not all params are checked)
-        for name, params in out2.iteritems():
+        for name, params in out2.items():
             assert name in out1, ("missing disk '%s' in info-1.5\n%s\n%s"
                                   % (name, out2, out1))
-            for key, value in params.iteritems():
+            for key, value in params.items():
                 assert out1[name].get(key, 0) == value, ("value of disk %s "
                                                          "mismatch in info-1.5 %s=%s (%s)\n%s\n%s"
                                                          % (name, key, value, out1[
@@ -175,10 +175,10 @@ sd0: [not inserted]
 
         # verify, that booth representation gives the same results
         # (qemu-1.4 is less informative so not all params are checked)
-        for name, params in out1.iteritems():
+        for name, params in out1.items():
             assert name in out3, ("missing disk '%s' in info-1.5\n%s\n%s"
                                   % (name, out1, out3))
-            for key, value in params.iteritems():
+            for key, value in params.items():
                 assert out3[name].get(key, 0) == value, ("value of disk %s "
                                                          "mismatch in QMP version %s=%s (%s)\n%s\n%s"
                                                          % (name, key, value, out3[

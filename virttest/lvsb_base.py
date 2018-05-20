@@ -473,7 +473,7 @@ class TestSandboxes(object):
         Create self.count Sandbox instances
         """
         # self.sandboxes probably empty, can't use for_each()
-        for index in xrange(0, self.count):
+        for index in range(0, self.count):
             del index  # Keep pylint happy
             self.sandboxes.append(self.SANDBOX_TYPE(self.params))
 

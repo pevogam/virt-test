@@ -875,7 +875,7 @@ class ThRecvCheck(Thread):
                 buf = self.port.sock.recv(self.blocklen)
                 if buf:
                     # Compare the received data with the control data
-                    for idx_char in xrange(len(buf)):
+                    for idx_char in range(len(buf)):
                         _char = self.buff.popleft()
                         if buf[idx_char] == _char:
                             self.idx += 1
@@ -886,7 +886,7 @@ class ThRecvCheck(Thread):
                                           "%dth character.", self.getName(),
                                           self.idx)
                             buf = buf[idx_char:]
-                            for i in xrange(100):
+                            for i in range(100):
                                 if len(self.buff) < self.sendidx:
                                     time.sleep(0.01)
                                 else:
@@ -897,21 +897,21 @@ class ThRecvCheck(Thread):
                                               "lowered as there is not enough "
                                               "data after 1s. Using sendidx="
                                               "%s.", self.getName(), sendidx)
-                            for _ in xrange(sendidx / self.blocklen):
+                            for _ in range(sendidx / self.blocklen):
                                 if self.exitevent.isSet():
                                     break
                                 buf += self.port.sock.recv(self.blocklen)
                             queue = _char
-                            for _ in xrange(sendidx):
+                            for _ in range(sendidx):
                                 queue += self.buff[_]
                             offset_a = None
                             offset_b = None
-                            for i in xrange(sendidx):
+                            for i in range(sendidx):
                                 length = min(len(buf[i:]), len(queue))
                                 if buf[i:] == queue[:length]:
                                     offset_a = i
                                     break
-                            for i in xrange(sendidx):
+                            for i in range(sendidx):
                                 length = min(len(queue[i:]), len(buf))
                                 if queue[i:][:length] == buf[:length]:
                                     offset_b = i
@@ -926,7 +926,7 @@ class ThRecvCheck(Thread):
                                               "%s)", self.getName(), offset_a,
                                               sendidx)
                                 buf = buf[offset_a + 1:]
-                                for _ in xrange(len(buf)):
+                                for _ in range(len(buf)):
                                     self.buff.popleft()
                                 verif_buf.extend(buf)
                                 self.idx += len(buf)
@@ -939,15 +939,15 @@ class ThRecvCheck(Thread):
                                 # Pop-out the lost characters from verif_queue
                                 # (first one is already out)
                                 self.sendidx -= offset_b
-                                for i in xrange(offset_b - 1):
+                                for i in range(offset_b - 1):
                                     self.buff.popleft()
-                                for _ in xrange(len(buf)):
+                                for _ in range(len(buf)):
                                     self.buff.popleft()
                                 self.idx += len(buf)
                                 verif_buf.extend(buf)
                             else:   # Too big data loss or duplication
                                 verif = ""
-                                for _ in xrange(-min(sendidx, len(verif_buf)),
+                                for _ in range(-min(sendidx, len(verif_buf)),
                                                 0):
                                     verif += verif_buf[_]
                                 logging.error("ThRecvCheck %s: mismatched data"

@@ -51,7 +51,7 @@ class QtreeNode(object):
             out += "\n[parent]\n %s" % self.parent.str_short()
         if self.qtree:
             out += "\n[info qtree]"
-        for tmp in self.qtree.iteritems():
+        for tmp in self.qtree.items():
             out += "\n %s = %s" % (tmp[0], tmp[1])
         if self.children:
             out += "\n[children]"
@@ -59,7 +59,7 @@ class QtreeNode(object):
             out += "\n %s" % tmp.str_short()
         if self.params:
             out += "\n[params]"
-        for tmp in self.params.iteritems():
+        for tmp in self.params.items():
             out += "\n %s = %s" % (tmp[0], [tmp[1]])
         return out
 
@@ -186,7 +186,7 @@ class QtreeDisk(QtreeDev):
         out = super(QtreeDisk, self).__str__()
         if self.block:
             out += "\n[info block]"
-        for tmp in self.block.iteritems():
+        for tmp in self.block.items():
             out += "\n%s = %s" % (tmp[0], tmp[1])
         return out
 
@@ -363,7 +363,7 @@ class QtreeContainer(object):
             current = current.get_parent()
             offset -= OFFSET_PER_LEVEL
         # This is the place to put HOOKs for nasty qtree devices
-        for i in xrange(len(self.nodes)):
+        for i in range(len(self.nodes)):
             _hook_usb2_disk(self.nodes[i])
 
 
@@ -393,14 +393,14 @@ class QtreeDisksContainer(object):
         """
         additional = 0
         missing = 0
-        for i in xrange(len(self.disks)):
+        for i in range(len(self.disks)):
             disk = self.disks[i]
             name = disk.get_qname()
             if name not in info:
                 logging.error("disk %s is in block but not in qtree", name)
                 missing += 1
                 continue
-            for prop, value in info[name].iteritems():
+            for prop, value in info[name].items():
                 disk.set_block_prop(prop, value)
         for disk in self.disks:
             if disk.get_block() == {}:
@@ -523,7 +523,7 @@ class QtreeDisksContainer(object):
             image_name = utils_misc.get_path(data_dir.get_data_dir(),
                                              params.object_params(name).get('cdrom', ''))
             image_name = os.path.realpath(image_name)
-            for (qname, disk) in disks.iteritems():
+            for (qname, disk) in disks.items():
                 if disk[0].get('image_name') == image_name:
                     break
             else:
@@ -539,7 +539,7 @@ class QtreeDisksContainer(object):
             image_name = os.path.realpath(
                 storage.get_image_filename(image_params,
                                            base_dir))
-            for (qname, disk) in disks.iteritems():
+            for (qname, disk) in disks.items():
                 if disk[0].get('image_name') == image_name:
                     current = disk[0]
                     current_node = disk[1]

@@ -50,7 +50,7 @@ class Params(UserDict.IterableUserDict):
         self.lock.acquire()
         new_dict = self.copy()
         self.lock.release()
-        for key in new_dict.keys():
+        for key in list(new_dict.keys()):
             if key.endswith(suffix):
                 new_key = key.split(suffix)[0]
                 new_dict[new_key] = new_dict[key]
@@ -64,6 +64,6 @@ class Params(UserDict.IterableUserDict):
         count = self.get(count_key, 1)
         # Protect in case original is modified for some reason
         cpy = self.copy()
-        for number in xrange(1, int(count) + 1):
+        for number in range(1, int(count) + 1):
             key = "%s%s" % (base_name, number)
             yield (key, cpy.get(key))

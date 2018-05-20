@@ -57,7 +57,7 @@ def register(env, test_type, func, *targs, **kargs):
                                   "unpickable targument '%s'. Please contact "
                                   "the test developer to fix it."
                                   % (func, arg))
-    for key, arg in kargs.iteritems():
+    for key, arg in kargs.items():
         if hasattr(arg, '__slots__') and not hasattr(arg, '__getstate__'):
             raise error.TestError("Trying to register exitfunction '%s' with "
                                   "unpickable kargument '%s=%s'. Please "

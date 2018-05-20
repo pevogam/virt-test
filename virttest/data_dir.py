@@ -190,7 +190,7 @@ def get_deps_dir(target=None):
     except TypeError:
         path = os.path.dirname(frame[1])
     nesting_limit = 10
-    for index in xrange(nesting_limit):
+    for index in range(nesting_limit):
         files = os.listdir(path)
         origin_path = ""
         if 'shared' in files:

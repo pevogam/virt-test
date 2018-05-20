@@ -288,7 +288,7 @@ class GithubIssuesBase(list):
 
     def keys(self):
         # Iterators are simply better
-        return xrange(1, self.__len__() + 1)
+        return range(1, self.__len__() + 1)
 
     def values(self):
         # Iterator comprehension

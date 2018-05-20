@@ -879,7 +879,7 @@ class Bridge(object):
         return result
 
     def list_br(self):
-        return self.get_structure().keys()
+        return list(self.get_structure().keys())
 
     def list_iface(self):
         """
@@ -1360,7 +1360,7 @@ def refresh_neigh_table(interface_name=None, neigh_address="ff02::1"):
     elif isinstance(interface_name, str):
         interfaces = interface_name.split()
     else:
-        interfaces = filter(lambda x: "-" not in x, get_net_if())
+        interfaces = list(filter(lambda x: "-" not in x, get_net_if()))
         interfaces.remove("lo")
 
     for interface in interfaces:
@@ -1969,14 +1969,14 @@ class VirtIface(propcan.PropCan, object):
         if isinstance(mac, (str, unicode)):
             mac = mac.split(':')
         # strip off any trailing empties
-        for rindex in xrange(len(mac), 0, -1):
+        for rindex in range(len(mac), 0, -1):
             if not mac[rindex - 1].strip():
                 del mac[rindex - 1]
             else:
                 break
         try:
             assert len(mac) < 7
-            for byte_str_index in xrange(0, len(mac)):
+            for byte_str_index in range(0, len(mac)):
                 byte_str = mac[byte_str_index]
                 assert isinstance(byte_str, (str, unicode))
                 assert len(byte_str) > 0
@@ -1998,7 +1998,7 @@ class VirtIface(propcan.PropCan, object):
         """
         Return string formatting of int mac_bytes
         """
-        for byte_index in xrange(0, len(mac_bytes)):
+        for byte_index in range(0, len(mac_bytes)):
             mac = mac_bytes[byte_index]
             # Project standardized on lower-case hex
             if mac < 16:
@@ -2120,8 +2120,8 @@ class VMNet(list):
         self.params = params.object_params(self.vm_name)
         self.vm_type = self.params.get('vm_type', 'default')
         self.driver_type = self.params.get('driver_type', 'default')
-        for key, value in VMNetStyle(self.vm_type,
-                                     self.driver_type).items():
+        for key, value in list(VMNetStyle(self.vm_type,
+                                          self.driver_type).items()):
             setattr(self, key, value)
 
     def process_mac(self, value):
@@ -2188,8 +2188,8 @@ class VMNet(list):
         """
         Return the first index with prop_name key matching prop_value or None
         """
-        for nic_index in xrange(0, len(self)):
-            if self[nic_index].has_key(prop_name):
+        for nic_index in range(0, len(self)):
+            if prop_name in self[nic_index]:
                 if self[nic_index][prop_name] == prop_value:
                     return nic_index
         return None
@@ -2313,7 +2313,7 @@ class ParamsNet(VMNet):
         default_params['vlan'] = str(nic_name_list.index(nic_name))
         if nic_params.get('enable_misx_vectors') == 'yes':
             default_params['vectors'] = 2 * 1 + 2
-        for key, val in default_params.items():
+        for key, val in list(default_params.items()):
             nic_params.setdefault(key, val)
 
         return nic_params
@@ -2479,7 +2479,7 @@ class DbNet(VMNet):
     def mac_index(self):
         """Generator of mac addresses found in database"""
         try:
-            for db_key in self.db.keys():
+            for db_key in list(self.db.keys()):
                 for nic in self.db_entry(db_key):
                     mac = nic.get('mac')
                     if mac:
@@ -2537,12 +2537,12 @@ class VirtNet(DbNet, ParamsNet):
         for attrname in ['params', 'vm_name', 'db_key', 'db_filename',
                          'vm_type', 'driver_type', 'db_lockfile']:
             state[attrname] = getattr(self, attrname)
-        for style_attr in VMNetStyle(self.vm_type, self.driver_type).keys():
+        for style_attr in list(VMNetStyle(self.vm_type, self.driver_type).keys()):
             state[style_attr] = getattr(self, style_attr)
         return state
 
     def __setstate__(self, state):
-        for key in state.keys():
+        for key in list(state.keys()):
             if key == 'container_items':
                 continue  # handle outside loop
             setattr(self, key, state.pop(key))
@@ -2578,7 +2578,7 @@ class VirtNet(DbNet, ParamsNet):
         :raise: NetError if mac generation failed
         """
         nic = self[nic_index_or_name]
-        if nic.has_key('mac'):
+        if 'mac' in nic:
             logging.warning("Overwriting mac %s for nic %s with random"
                             % (nic.mac, str(nic_index_or_name)))
         self.free_mac_address(nic_index_or_name)
@@ -2611,7 +2611,7 @@ class VirtNet(DbNet, ParamsNet):
         :param nic_index_or_name: index number or name of NIC
         """
         nic = self[nic_index_or_name]
-        if nic.has_key('mac'):
+        if 'mac' in nic:
             # Reset to params definition if any, or None
             self.reset_mac(nic_index_or_name)
         self.update_db()
@@ -2624,7 +2624,7 @@ class VirtNet(DbNet, ParamsNet):
         :raise: NetError if mac already assigned
         """
         nic = self[nic_index_or_name]
-        if nic.has_key('mac'):
+        if 'mac' in nic:
             logging.warning("Overwriting mac %s for nic %s with %s"
                             % (nic.mac, str(nic_index_or_name), mac))
         nic.mac = mac.lower()

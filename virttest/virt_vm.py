@@ -385,7 +385,7 @@ class VMUSBControllerPortFullError(VMUSBControllerError):
     def __str__(self):
         output = ""
         try:
-            for ctl, dev_list in self.usb_dev_dict.iteritems():
+            for ctl, dev_list in self.usb_dev_dict.items():
                 output += "%s: %s\n" % (ctl, dev_list)
         except Exception:
             pass
@@ -640,12 +640,12 @@ class BaseVM(object):
         if nic.nettype not in ['bridge', 'macvtap']:
             hostname = socket.gethostname()
             return socket.gethostbyname(hostname)
-        if not nic.has_key('mac'):
+        if 'mac' not in nic:
             if self.params.get('vm_type') in ['libvirt', 'v2v']:
                 # Look it up from xml
                 nic.mac = self.get_virsh_mac_address(index)
         # else TODO: Look up mac from existing qemu-kvm process
-        if not nic.has_key('mac'):
+        if 'mac' not in nic:
             raise VMMACAddressMissingError(index)
         if self.ip_version == "ipv4":
             # Get the IP address from arp cache
@@ -720,7 +720,7 @@ class BaseVM(object):
               ...}
         """
         for virtnet in self.virtnet:
-            for iface_name, iface in addrs.iteritems():
+            for iface_name, iface in addrs.items():
                 if virtnet.mac in iface["mac"]:
                     virtnet.ip = {"ipv4": iface["ipv4"],
                                   "ipv6": iface["ipv6"]}
@@ -783,7 +783,7 @@ class BaseVM(object):
         :param params: Dict with additional NIC parameters to set.
         :return: Dict with new NIC's info.
         """
-        if not params.has_key('nic_name'):
+        if 'nic_name' not in params:
             params['nic_name'] = utils_misc.generate_random_id()
         nic_name = params['nic_name']
         if nic_name in self.virtnet.nic_name_list():
@@ -791,12 +791,12 @@ class BaseVM(object):
         else:
             self.virtnet.append(params)
         nic = self.virtnet[nic_name]
-        if not nic.has_key('mac'):  # generate random mac
+        if 'mac' not in nic:  # generate random mac
             logging.debug("Generating random mac address for nic")
             self.virtnet.generate_mac_address(nic_name)
         # mac of '' or invaid format results in not setting a mac
-        if nic.has_key('ip') and nic.has_key('mac'):
-            if not self.address_cache.has_key(nic.mac):
+        if 'ip' in nic and 'mac' in nic:
+            if nic.mac not in self.address_cache:
                 logging.debug("(address cache) Adding static "
                               "cache entry: %s ---> %s" % (nic.mac, nic.ip))
             else:

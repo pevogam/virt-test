@@ -158,7 +158,7 @@ class TestVirtIface(unittest.TestCase):
         for propertea in self.VirtIface.__all_slots__:
             props[propertea] = utils_misc.generate_random_string(16)
         more_props = {}
-        for _ in xrange(0, 16):
+        for _ in range(0, 16):
             key = utils_misc.generate_random_string(16)
             value = utils_misc.generate_random_string(16)
             more_props[key] = value
@@ -443,7 +443,7 @@ class TestVmNetSubclasses(unittest.TestCase):
             # Size of list should match number of nics configured
             self.assertEqual(len(param_nics), len(virtnet))
             # Test each interface data
-            for virtnet_index in xrange(0, len(virtnet)):
+            for virtnet_index in range(0, len(virtnet)):
                 # index correspondence already established/asserted
                 virtnet_nic = virtnet[virtnet_index]
                 params_nic = param_nics[virtnet_index]
@@ -539,7 +539,7 @@ class TestVmNetSubclasses(unittest.TestCase):
             pass
         self.zero_counter(25)
         # setup() method already set LASTBYTE to '-1'
-        for lastbyte in xrange(0, 0xFF):
+        for lastbyte in range(0, 0xFF):
             # test_07_VirtNet demands last byte in name and mac match
             vm_name = "vm%d" % lastbyte
             if lastbyte < 16:
@@ -571,7 +571,7 @@ class TestVmNetSubclasses(unittest.TestCase):
         self.zero_counter(25)
         # second loop forces db load from disk
         # also confirming params merge with db data
-        for lastbyte in xrange(0, 0xFF):
+        for lastbyte in range(0, 0xFF):
             vm_name = "vm%d" % lastbyte
             params = utils_params.Params({
                 "nics": "nic1",
@@ -661,7 +661,7 @@ class TestVmNetSubclasses(unittest.TestCase):
             virtnet = utils_net.VirtNet(test_params,
                                         fakevm.name,
                                         fakevm.name)
-            for virtnet_index in xrange(0, len(virtnet)):
+            for virtnet_index in range(0, len(virtnet)):
                 result = virtnet.generate_ifname(virtnet_index)
                 self.assertEqual(result, virtnet[virtnet_index].ifname)
                 # assume less than 10 nics

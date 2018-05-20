@@ -27,7 +27,7 @@ class ParamsDict(dict):
 
     def object_params(self, obj):
         ret = self.copy()
-        for (param, value) in self.iteritems():
+        for (param, value) in self.items():
             if param.endswith('_%s' % obj):
                 ret[param[:-len('_%s' % obj)]] = value
         return ret
@@ -182,7 +182,7 @@ class QtreeContainerTest(unittest.TestCase):
                                                             "nodes is not equal to the number of qtree nodes. "
                                                             "%s != %s" % (len(nodes), len(reference_nodes))))
 
-        for i in xrange(len(nodes)):
+        for i in range(len(nodes)):
             self.assertTrue(isinstance(nodes[i], reference_nodes[i]),
                             ("Node %d should be class %s but is %s instead" %
                              (i, reference_nodes[i], type(reference_nodes))))

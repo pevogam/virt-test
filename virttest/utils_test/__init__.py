@@ -535,7 +535,7 @@ def run_virtio_serial_file_transfer(test, params, env, port_name=None,
 
     def transfer_data(session, host_cmd, guest_cmd, n_time, timeout,
                       md5_check, action):
-        for num in xrange(n_time):
+        for num in range(n_time):
             md5_host = "1"
             md5_guest = "2"
             logging.info("Data transfer repeat %s/%s." % (num + 1, n_time))

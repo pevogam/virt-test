@@ -669,7 +669,7 @@ class VM(virt_vm.BaseVM):
                     cmd += ",bootfile='%s'" % bootfile
                     cmd_nd = cmd
                 if "[,hostfwd=" in devices.get_help_text():
-                    for i in xrange(len(hostfwd)):
+                    for i in range(len(hostfwd)):
                         cmd += (",hostfwd=tcp::%%(host_port%d)s"
                                 "-:%%(guest_port%d)s" % (i, i))
                         cmd_nd += ",hostfwd=tcp::DYN-:%%(guest_port)ds"
@@ -797,7 +797,7 @@ class VM(virt_vm.BaseVM):
                 """
                 Set QCustomDevice properties by user params dict.
                 """
-                for pro, val in dev_params.iteritems():
+                for pro, val in dev_params.items():
                     suffix = "_%s" % backend_type
                     if pro.endswith(suffix):
                         idx = len(suffix)
@@ -1212,7 +1212,7 @@ class VM(virt_vm.BaseVM):
 
         self.last_driver_index = 0
         # init the dict index_in_use
-        for key in params.keys():
+        for key in list(params.keys()):
             if 'drive_index' in key:
                 self.index_in_use[params.get(key)] = True
 
@@ -2412,7 +2412,7 @@ class VM(virt_vm.BaseVM):
                                                      'vhost=on']) and
                             (nic_params.get("enable_vhostfd", "yes") == "yes")):
                         vhostfds = []
-                        for i in xrange(int(nic.queues)):
+                        for i in range(int(nic.queues)):
                             vhostfds.append(str(os.open("/dev/vhost-net",
                                                         os.O_RDWR)))
                         nic.vhostfds = ':'.join(vhostfds)
@@ -2661,7 +2661,7 @@ class VM(virt_vm.BaseVM):
 
             self.create_serial_console()
 
-            for key, value in self.logs.items():
+            for key, value in list(self.logs.items()):
                 outfile = "%s-%s.log" % (key, name)
                 self.logsessions[key] = aexpect.Tail(
                     "nc -U %s" % value,
@@ -2817,7 +2817,7 @@ class VM(virt_vm.BaseVM):
         file_list += qemu_monitor.get_monitor_filenames(self)
         file_list += self.get_virtio_port_filenames()
         file_list += self.get_serial_console_filenames()
-        file_list += self.logs.values()
+        file_list += list(self.logs.values())
 
         for f in file_list:
             try:
@@ -2833,7 +2833,7 @@ class VM(virt_vm.BaseVM):
                 pass
 
         if free_mac_addresses:
-            for nic_index in xrange(0, len(self.virtnet)):
+            for nic_index in range(0, len(self.virtnet)):
                 self.free_mac_address(nic_index)
 
         for nic in self.virtnet:
@@ -3172,7 +3172,7 @@ class VM(virt_vm.BaseVM):
                       nic, self.name))
         for propertea in ['netdev_id', 'ifname', 'queues',
                           'tapfds', 'tapfd_ids', 'vectors']:
-            if nic.has_key(propertea):
+            if propertea in nic:
                 del nic[propertea]
 
     def add_nic(self, **params):
@@ -3191,7 +3191,7 @@ class VM(virt_vm.BaseVM):
         nic.set_if_none('vlan', str(nic_index))
         nic.set_if_none('device_id', utils_misc.generate_random_id())
         nic.set_if_none('queues', '1')
-        if not nic.has_key('netdev_id'):
+        if 'netdev_id' not in nic:
             # virtnet items are lists that act like dicts
             nic.netdev_id = self.add_netdev(**dict(nic))
         nic.set_if_none('nic_model', params['nic_model'])
@@ -3278,7 +3278,7 @@ class VM(virt_vm.BaseVM):
         else:  # unsupported nettype
             raise virt_vm.VMUnknownNetTypeError(self.name, nic_index_or_name,
                                                 nic.nettype)
-        if nic.has_key('netdev_extra_params') and nic.netdev_extra_params:
+        if 'netdev_extra_params' in nic and nic.netdev_extra_params:
             attach_cmd += nic.netdev_extra_params
         error.context("Hotplugging " + msg_sfx + attach_cmd, logging.debug)
 
@@ -3306,19 +3306,19 @@ class VM(virt_vm.BaseVM):
                       nic_index_or_name, self.name))
         nic = self.virtnet[nic_index_or_name]
         device_add_cmd = "device_add"
-        if nic.has_key('nic_model'):
+        if 'nic_model' in nic:
             device_add_cmd += ' driver=%s' % nic.nic_model
         device_add_cmd += ",netdev=%s" % nic.device_id
-        if nic.has_key('mac'):
+        if 'mac' in nic:
             device_add_cmd += ",mac=%s" % nic.mac
         device_add_cmd += ",id=%s" % nic.nic_name
         if nic['nic_model'] == 'virtio-net-pci':
             if int(nic['queues']) > 1:
                 device_add_cmd += ",mq=on"
-            if nic.has_key('vectors'):
+            if 'vectors' in nic:
                 device_add_cmd += ",vectors=%s" % nic.vectors
         device_add_cmd += nic.get('nic_extra_params', '')
-        if nic.has_key('romfile'):
+        if 'romfile' in nic:
             device_add_cmd += ",romfile=%s" % nic.romfile
         error.context("Activating nic on VM %s with monitor command %s" % (
             self.name, device_add_cmd))
@@ -3784,7 +3784,7 @@ class VM(virt_vm.BaseVM):
                        "comma": "0x33",
                        "dot": "0x34",
                        "slash": "0x35"}
-        for key, value in key_mapping.items():
+        for key, value in list(key_mapping.items()):
             keystr = keystr.replace(key, value)
         self.monitor.sendkey(keystr)
         time.sleep(0.2)
@@ -3889,7 +3889,7 @@ class VM(virt_vm.BaseVM):
         if isinstance(blocks_info, str):
             for block in blocks_info.splitlines():
                 match = True
-                for key, value in p_dict.iteritems():
+                for key, value in p_dict.items():
                     if value is True:
                         check_str = "%s=1" % key
                     elif value is False:
@@ -3904,7 +3904,7 @@ class VM(virt_vm.BaseVM):
         else:
             for block in blocks_info:
                 match = True
-                for key, value in p_dict.iteritems():
+                for key, value in p_dict.items():
                     if isinstance(value, bool):
                         check_str = "u'%s': %s" % (key, value)
                     else:
@@ -3953,7 +3953,7 @@ class VM(virt_vm.BaseVM):
 
         block_list = self.process_info_block(blocks_info)
         for block in block_list:
-            for key, value in p_dict.iteritems():
+            for key, value in p_dict.items():
                     # for new qemu we just deal with key = [removable,
                     # file,backing_file], for other types key, we should
                     # fixup later
