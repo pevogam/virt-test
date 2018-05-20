@@ -16,7 +16,6 @@ More specifically:
 :copyright: 2008-2013 Red Hat Inc.
 """
 
-import commands
 import glob
 import imp
 import locale
@@ -1365,7 +1364,7 @@ def service_setup(vm, session, directory):
         src = os.path.join(directory, rh_perf_envsetup_script)
         vm.copy_files_to(src, "/tmp/rh_perf_envsetup.sh")
         logging.info("setup perf environment for host")
-        commands.getoutput("bash %s host %s" % (src, rebooted))
+        subprocess.check_call("bash %s host %s" % (src, rebooted), shell=True)
         logging.info("setup perf environment for guest")
         session.cmd("bash /tmp/rh_perf_envsetup.sh guest %s" % rebooted)
 

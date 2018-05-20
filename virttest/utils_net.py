@@ -9,8 +9,7 @@ import random
 import math
 import time
 import shelve
-import remote
-import commands
+import subprocess
 from autotest.client import utils, os_dep
 from autotest.client.shared import error
 import propcan
@@ -2695,7 +2694,10 @@ def verify_ip_address_ownership(ip, macs, timeout=60.0):
         for mac in macs:
             if ip_map.get(mac) == ip:
                 return True
-        o = commands.getoutput(arping_cmd)
+        try:
+            o = subprocess.check_output(arping_cmd, shell=True).decode()
+        except subprocess.CalledProcessError as e:
+            o = e.output.decode()
         if not regex.search(o):
             logging.debug("Verify arping result failed: %s" % o)
             return False
@@ -2704,7 +2706,10 @@ def verify_ip_address_ownership(ip, macs, timeout=60.0):
     # Get the name of the bridge device for ip route cache
     ip_cmd = utils_misc.find_command("ip")
     ip_cmd = "%s route get %s; %s route | grep default" % (ip_cmd, ip, ip_cmd)
-    output = commands.getoutput(ip_cmd)
+    try:
+        output = subprocess.check_output(ip_cmd, shell=True).decode()
+    except subprocess.CalledProcessError as e:
+        output = e.output.decode()
     devs = re.findall(r"dev\s+\S+", output, re.I)
     checked_devs = []
     if not devs:

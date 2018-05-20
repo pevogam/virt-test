@@ -13,7 +13,6 @@ import stat
 import signal
 import re
 import logging
-import commands
 import subprocess
 import fcntl
 import sys
@@ -207,7 +206,11 @@ def kill_process_tree(pid, sig=signal.SIGKILL):
     """
     if not safe_kill(pid, signal.SIGSTOP):
         return
-    children = commands.getoutput("ps --ppid=%d -o pid=" % pid).split()
+    try:
+        children = subprocess.check_output(("ps", "--ppid=%d" % pid, "-o", "pid="),
+                                           shell=True).decode().split()
+    except subprocess.CalledProcessError:
+        children = []
     for child in children:
         kill_process_tree(int(child), sig)
     safe_kill(pid, sig)
@@ -651,8 +654,9 @@ def get_full_pci_id(pci_id):
     :param pci_id: PCI ID of a device.
     """
     cmd = "lspci -D | awk '/%s/ {print $1}'" % pci_id
-    status, full_id = commands.getstatusoutput(cmd)
-    if status != 0:
+    try:
+        full_id = subprocess.check_output(cmd, shell=True).decode()
+    except subprocess.CalledProcessError:
         return None
     return full_id
 
@@ -664,7 +668,11 @@ def get_vendor_from_pci_id(pci_id):
     :param pci_id: PCI ID of a device.
     """
     cmd = "lspci -n | awk '/%s/ {print $3}'" % pci_id
-    return re.sub(":", " ", commands.getoutput(cmd))
+    try:
+        out = subprocess.check_output(cmd, shell=True).decode()
+    except subprocess.CalledProcessError:
+        out = ""
+    return re.sub(":", " ", out)
 
 
 def get_dev_pts_max_id():
@@ -1000,7 +1008,10 @@ def qemu_has_option(option, qemu_path="/usr/bin/qemu-kvm"):
     :param option: Option need check.
     :param qemu_path: Path for qemu-kvm.
     """
-    hlp = commands.getoutput("%s -help" % qemu_path)
+    try:
+        hlp = subprocess.check_output((qemu_path, "-help"), shell=True).decode()
+    except subprocess.CalledProcessError:
+        hlp = ""
     return bool(re.search(r"^-%s(\s|$)" % option, hlp, re.MULTILINE))
 
 

@@ -6,7 +6,7 @@ import re
 import os
 import shutil
 import logging
-import commands
+import subprocess
 from autotest.client import os_dep
 from autotest.client.shared import utils, error
 from virttest import utils_misc
@@ -262,9 +262,11 @@ class NFSClient(object):
                                                                 self.mount_dir)
         cmd = ssh_cmd + "'%s'" % find_mountpoint_cmd
         logging.debug("The command: %s", cmd)
-        status, output = commands.getstatusoutput(cmd)
-        if status:
-            logging.debug("The command result: <%s:%s>", status, output)
+        try:
+            subprocess.check_call(cmd, shell=True)
+        except subprocess.CalledProcessError as e:
+            logging.debug("The command result: <%s:%s>",
+                          e.returncode, e.output.decode())
             return False
 
         return True
@@ -313,13 +315,15 @@ class NFSClient(object):
         ssh_cmd = "ssh %s@%s " % (self.ssh_user, self.nfs_client_ip)
         check_mount_dir_cmd = ssh_cmd + "'ls -d %s'" % self.mount_dir
         logging.debug("To check if the %s exists", self.mount_dir)
-        output = commands.getoutput(check_mount_dir_cmd)
+        # Raise an error if mount state cannot be determined
+        output = subprocess.check_output(check_mount_dir_cmd, shell=True).decode()
         if re.findall("No such file or directory", output, re.M):
             mkdir_cmd = ssh_cmd + "'mkdir -p %s'" % self.mount_dir
             logging.debug("Prepare to create %s", self.mount_dir)
-            s, o = commands.getstatusoutput(mkdir_cmd)
-            if s != 0:
-                raise error.TestFail("Failed to run %s: %s" % (mkdir_cmd, o))
+            try:
+                subprocess.check_call(mkdir_cmd)
+            except subprocess.CalledProcessError as e:
+                raise error.TestFail("Failed to run %s: %s" % (e.cmd, e.o.decode()))
             self.mkdir_mount_remote = True
 
         self.mount_src = "%s:%s" % (self.nfs_server_ip, self.mount_src)

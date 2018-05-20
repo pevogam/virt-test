@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 import tempfile
-import commands
+import subprocess
 
 from autotest.client import utils, os_dep
 from virttest import propcan, remote, utils_libvirtd
@@ -922,9 +922,10 @@ class TLSConnection(ConnectionBase):
             if os.path.exists(cert_path):
                 shutil.rmtree(cert_path)
             else:
-                status, output = commands.getstatusoutput(cmd)
-                if status:
-                    raise ConnRmCertError(cert_path, output)
+                try:
+                    subprocess.check_call(cmd, shell=True)
+                except subprocess.CalledProcessError as e:
+                    raise ConnRmCertError(cert_path, e.output.decode())
 
         # remove remote generated certifications file
         server_session = remote.wait_for_login('ssh', server_ip, '22',

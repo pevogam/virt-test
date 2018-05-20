@@ -1,6 +1,6 @@
 import os
 import time
-import commands
+import subprocess
 import re
 import logging
 import glob
@@ -687,7 +687,11 @@ def preprocess(test, params, env):
             kvm_userspace_version = "Unknown"
     else:
         qemu_path = utils_misc.get_qemu_binary(params)
-        version_line = commands.getoutput("%s -help | head -n 1" % qemu_path)
+        try:
+            version_line = subprocess.check_output("%s -help | head -n 1" % qemu_path,
+                                                shell=True).decode()
+        except subprocess.CalledProcessError:
+            version_line = ""
         matches = re.findall("[Vv]ersion .*?,", version_line)
         if matches:
             kvm_userspace_version = " ".join(matches[0].split()[1:]).strip(",")

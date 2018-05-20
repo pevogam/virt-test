@@ -1,7 +1,7 @@
 import re
 import os
 import logging
-import commands
+import subprocess
 from autotest.client.shared import error, utils
 from virttest import virsh, virt_vm, libvirt_vm, data_dir
 from virttest import utils_net, xml_utils
@@ -102,9 +102,10 @@ def attach_additional_disk(vm, disksize, targetdev):
     logging.info("Attaching disk...")
     disk_path = os.path.join(data_dir.get_tmp_dir(), targetdev)
     cmd = "qemu-img create %s %s" % (disk_path, disksize)
-    status, output = commands.getstatusoutput(cmd)
-    if status:
-        return (False, output)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as e:
+        return (False, e.output.decode())
 
     # To confirm attached device do not exist.
     virsh.detach_disk(vm.name, targetdev, extra="--config")

@@ -9,7 +9,7 @@ import os
 import logging
 import fcntl
 import re
-import commands
+import subprocess
 from autotest.client.shared import error
 from autotest.client import utils
 from virttest.qemu_devices import qdevices, qcontainer
@@ -846,7 +846,11 @@ class VM(virt_vm.BaseVM):
                 return ""
             spice_help = ""
             if devices.has_option("spice-help"):
-                spice_help = commands.getoutput("%s -device \\?" % qemu_binary)
+                try:
+                    spice_help = subprocess.check_output("%s -device \\?" % qemu_binary,
+                                                        shell=True).decode()
+                except subprocess.CalledProcessError:
+                    spice_help = ""
             s_port = str(utils_misc.find_free_port(*port_range))
             self.spice_options['spice_port'] = s_port
             cmd += " port=%s" % s_port
@@ -1208,7 +1212,11 @@ class VM(virt_vm.BaseVM):
         qemu_binary = utils_misc.get_qemu_binary(params)
 
         self.qemu_binary = qemu_binary
-        support_cpu_model = commands.getoutput("%s -cpu \\?" % qemu_binary)
+        try:
+            support_cpu_model = subprocess.check_output("%s -cpu \\?" % qemu_binary,
+                                                        shell=True).decode()
+        except subprocess.CalledProcessError:
+            support_cpu_model = ""
 
         self.last_driver_index = 0
         # init the dict index_in_use
@@ -2998,10 +3006,11 @@ class VM(virt_vm.BaseVM):
         :return: the PID of the parent shell process.
         """
         try:
-            children = commands.getoutput("ps --ppid=%d -o pid=" %
-                                          self.process.get_pid()).split()
+            children = subprocess.check_output("ps --ppid=%d -o pid=" %
+                                               self.process.get_pid(),
+                                               shell=True).decode().split()
             return int(children[0])
-        except (TypeError, IndexError, ValueError):
+        except (TypeError, IndexError, ValueError, subprocess.CalledProcessError):
             return None
 
     def get_shell_pid(self):

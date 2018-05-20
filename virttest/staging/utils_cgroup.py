@@ -13,7 +13,6 @@ import subprocess
 import time
 import re
 import random
-import commands
 from tempfile import mkdtemp
 from autotest.client import utils
 from autotest.client.shared import error
@@ -172,7 +171,11 @@ class Cgroup(object):
         try:
             cgexec_cmd = ("cgexec -g %s:%s %s %s" %
                           (self.module, cgroup, cmd, args))
-            status, output = commands.getstatusoutput(cgexec_cmd)
+            try:
+                output = subprocess.check_output(cgexec_cmd, shell=True).decode()
+                status = 0
+            except subprocess.CalledProcessError as e:
+                status, output = e.returncode, e.output.decode()
             return status, output
         except error.CmdError as detail:
             raise error.TestFail("Execute %s in cgroup failed!\n%s" %
