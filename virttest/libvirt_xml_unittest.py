@@ -776,7 +776,7 @@ class testStubXML(LibvirtXMLTestBase):
         self.assertEqual(foobar.virsh.domuuid(None),
                          "ddb0cf86-5ba8-4f83-480a-d96f54339219")
         self.assertEqual(foobar.device_tag, 'foobar')
-        self.assertEqual(unicode(foobar),
+        self.assertEqual(str(foobar),
                          u"<?xml version='1.0' encoding='UTF-8'?>\n<foobar />")
 
     def test_typed_device_stub(self):
@@ -785,7 +785,7 @@ class testStubXML(LibvirtXMLTestBase):
                          "ddb0cf86-5ba8-4f83-480a-d96f54339219")
         self.assertEqual(foobar.device_tag, 'foo')
         self.assertEqual(foobar.type_name, 'bar')
-        self.assertEqual(unicode(foobar),
+        self.assertEqual(str(foobar),
                          u'<?xml version=\'1.0\' encoding=\'UTF-8\'?>\n<foo type="bar" />')
 
 

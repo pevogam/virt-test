@@ -39,7 +39,7 @@ def md5eval(data):
     except NameError:
         hsh = md5.new()
     if data:
-        hsh.update(data)
+        hsh.update(data.encode())
 
     return hsh
 
@@ -114,9 +114,9 @@ def image_write_to_ppm_file(filename, width, height, data):
     :param height: PPM file height (pixels)
     """
     fout = open(filename, "wb")
-    fout.write("P6\n")
-    fout.write("%d %d\n" % (width, height))
-    fout.write("255\n")
+    fout.write(b"P6\n")
+    fout.write(("%d %d\n" % (width, height)).encode())
+    fout.write(b"255\n")
     fout.write(data)
     fout.close()
 
@@ -143,7 +143,7 @@ def image_crop(width, height, data, x1, y1, dx, dy):
         dx = width - x1
     if dy > height - y1:
         dy = height - y1
-    newdata = ""
+    newdata = b""
     index = (x1 + y1 * width) * 3
     for _ in range(dy):
         newdata += data[index:(index + dx * 3)]
@@ -199,10 +199,10 @@ def image_verify_ppm_file(filename):
     try:
         size = os.path.getsize(filename)
         fin = open(filename, "rb")
-        assert(fin.readline().strip() == "P6")
+        assert(fin.readline().strip() == b"P6")
         (width, height) = map(int, fin.readline().split())
         assert(width > 0 and height > 0)
-        assert(fin.readline().strip() == "255")
+        assert(fin.readline().strip() == b"255")
         size_read = fin.tell()
         fin.close()
         assert(size - size_read == width * height * 3)

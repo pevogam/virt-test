@@ -255,7 +255,7 @@ class Monitor:
                                          e)
             if not data:
                 break
-            s += data
+            s += data.decode()
         return s
 
     def _has_command(self, cmd):
@@ -644,7 +644,7 @@ class HumanMonitor(Monitor):
                                    "monitor command '%s'" % cmd)
         try:
             try:
-                self._socket.sendall(cmd + "\n")
+                self._socket.sendall(cmd.encode() + b"\n")
                 self._log_lines(cmd)
             except socket.error as e:
                 raise MonitorSocketError("Could not send monitor command %r" %

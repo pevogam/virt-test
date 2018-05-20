@@ -567,12 +567,14 @@ class Spawn(object):
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.STDOUT)
             # Send parameters to the server
-            sub.stdin.write("%s\n" % self.a_id)
-            sub.stdin.write("%s\n" % echo)
-            sub.stdin.write("%s\n" % ",".join(self.readers))
-            sub.stdin.write("%s\n" % command)
+            sub.stdin.write(("%s\n" % self.a_id).encode('utf-8'))
+            sub.stdin.write(("%s\n" % echo).encode('utf-8'))
+            sub.stdin.write(("%s\n" % ",".join(self.readers)).encode('utf-8'))
+            sub.stdin.write(("%s\n" % command).encode('utf-8'))
+            sub.stdin.flush()
             # Wait for the server to complete its initialization
-            while "Server %s ready" % self.a_id not in sub.stdout.readline():
+            while ("Server %s ready" % self.a_id not in
+                   sub.stdout.readline().decode('utf-8', "ignore")):
                 pass
 
         # Open the reading pipes
@@ -765,7 +767,7 @@ class Spawn(object):
         """
         try:
             fd = os.open(self.inpipe_filename, os.O_RDWR)
-            os.write(fd, cont)
+            os.write(fd, cont.encode())
             os.close(fd)
         except Exception:
             pass
@@ -1107,7 +1109,7 @@ class Expect(Tail):
             except Exception:
                 return data
             if fd in r:
-                new_data = os.read(fd, 1024)
+                new_data = os.read(fd, 1024).decode()
                 if not new_data:
                     return data
                 data += new_data

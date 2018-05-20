@@ -807,7 +807,7 @@ def _encode_entity(text, pattern=_escape):
 # (or "utf-16")
 
 
-def _escape_cdata(text, encoding=None, replace=string.replace):
+def _escape_cdata(text, encoding=None, replace=str.replace):
     # escape character data
     try:
         if encoding:
@@ -823,7 +823,7 @@ def _escape_cdata(text, encoding=None, replace=string.replace):
         _raise_serialization_error(text)
 
 
-def _escape_attrib(text, encoding=None, replace=string.replace):
+def _escape_attrib(text, encoding=None, replace=str.replace):
     # escape attribute value
     try:
         if encoding:

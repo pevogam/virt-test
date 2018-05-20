@@ -909,7 +909,7 @@ class Bridge(object):
         index = if_nametoindex(ifname)
         if index == 0:
             raise TAPNotExistError(ifname)
-        ifr = struct.pack("16si", brname, index)
+        ifr = struct.pack("16si", brname.encode(), index)
         _ = fcntl.ioctl(ctrl_sock, io_cmd, ifr)
         ctrl_sock.close()
 
@@ -997,7 +997,7 @@ def if_nametoindex(ifname):
     :param ifname: interface name
     """
     ctrl_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    ifr = struct.pack("16si", ifname, 0)
+    ifr = struct.pack("16si", ifname.encode(), 0)
     r = fcntl.ioctl(ctrl_sock, arch.SIOCGIFINDEX, ifr)
     index = struct.unpack("16si", r)[1]
     ctrl_sock.close()
@@ -1073,7 +1073,7 @@ def open_tap(devname, ifname, queues=1, vnet_hdr=True):
         if vnet_hdr and vnet_hdr_probe(int(tapfds[i])):
             flags |= arch.IFF_VNET_HDR
 
-        ifr = struct.pack("16sh", ifname, flags)
+        ifr = struct.pack("16sh", ifname.encode(), flags)
         try:
             r = fcntl.ioctl(int(tapfds[i]), arch.TUNSETIFF, ifr)
         except IOError as details:
@@ -1665,7 +1665,7 @@ def bring_up_ifname(ifname):
     :param ifname: Name of the interface
     """
     ctrl_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    ifr = struct.pack("16sh", ifname, arch.IFF_UP)
+    ifr = struct.pack("16sh", ifname.encode(), arch.IFF_UP)
     try:
         fcntl.ioctl(ctrl_sock, arch.SIOCSIFFLAGS, ifr)
     except IOError:
@@ -1680,7 +1680,7 @@ def bring_down_ifname(ifname):
     :param ifname: Name of the interface
     """
     ctrl_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
-    ifr = struct.pack("16sh", ifname, 0)
+    ifr = struct.pack("16sh", ifname.encode(), 0)
     try:
         fcntl.ioctl(ctrl_sock, arch.SIOCSIFFLAGS, ifr)
     except IOError:
@@ -1697,7 +1697,7 @@ def if_set_macaddress(ifname, mac):
     """
     ctrl_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, 0)
 
-    ifr = struct.pack("256s", ifname)
+    ifr = struct.pack("256s", ifname.encode())
     try:
         mac_dev = fcntl.ioctl(ctrl_sock, arch.SIOCGIFHWADDR, ifr)[18:24]
         mac_dev = ":".join(["%02x" % ord(m) for m in mac_dev])
@@ -1707,7 +1707,7 @@ def if_set_macaddress(ifname, mac):
     if mac_dev.lower() == mac.lower():
         return
 
-    ifr = struct.pack("16sH14s", ifname, 1,
+    ifr = struct.pack("16sH14s", ifname.encode(), 1,
                       "".join([chr(int(m, 16)) for m in mac.split(":")]))
     try:
         fcntl.ioctl(ctrl_sock, arch.SIOCSIFHWADDR, ifr)
@@ -1966,7 +1966,7 @@ class VirtIface(propcan.PropCan, object):
         """
         Convert list of string bytes to int list
         """
-        if isinstance(mac, (str, unicode)):
+        if isinstance(mac, str):
             mac = mac.split(':')
         # strip off any trailing empties
         for rindex in range(len(mac), 0, -1):
@@ -1978,7 +1978,7 @@ class VirtIface(propcan.PropCan, object):
             assert len(mac) < 7
             for byte_str_index in range(0, len(mac)):
                 byte_str = mac[byte_str_index]
-                assert isinstance(byte_str, (str, unicode))
+                assert isinstance(byte_str, str)
                 assert len(byte_str) > 0
                 try:
                     value = eval("0x%s" % byte_str, {}, {})
@@ -2753,7 +2753,7 @@ def get_ip_address_by_interface(ifname):
             mysocket.fileno(),
             arch.SIOCGIFADDR,
             # ifname to binary IFNAMSIZ == 16
-            struct.pack('256s', ifname[:15])
+            struct.pack('256s', ifname[:15].encode())
         )[20:24])
     except IOError:
         raise NetError(
