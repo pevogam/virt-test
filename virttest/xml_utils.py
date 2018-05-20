@@ -40,7 +40,7 @@ import os
 import shutil
 import tempfile
 import string
-import StringIO
+import io
 import logging
 from xml.parsers import expat
 # We *have* to use our ElementTree fork :(
@@ -209,7 +209,7 @@ class XMLTreeFile(ElementTree.ElementTree, XMLBackup):
     def __str__(self):
         self.write()
         self.flush()
-        xmlstr = StringIO.StringIO()
+        xmlstr = io.StringIO()
         self.write(xmlstr)
         return xmlstr.getvalue()
 

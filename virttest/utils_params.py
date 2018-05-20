@@ -1,4 +1,4 @@
-import UserDict
+import collections
 from threading import Lock
 
 from autotest.client.shared import error
@@ -8,7 +8,7 @@ class ParamNotFound(error.TestNAError):
     pass
 
 
-class Params(UserDict.IterableUserDict):
+class Params(collections.UserDict):
 
     """
     A dict-like object passed to every test.
@@ -18,7 +18,7 @@ class Params(UserDict.IterableUserDict):
     def __getitem__(self, key):
         """ overrides the error messages of missing params[$key] """
         try:
-            return UserDict.IterableUserDict.__getitem__(self, key)
+            return collections.UserDict.__getitem__(self, key)
         except KeyError:
             raise ParamNotFound("Mandatory parameter '%s' is missing. "
                                 "Check your cfg files for typos/mistakes" %

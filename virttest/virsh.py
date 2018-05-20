@@ -23,7 +23,7 @@ for non-existant keys.
 
 import signal
 import logging
-import urlparse
+import urllib.parse as urlparse
 import re
 import weakref
 import time

@@ -1,13 +1,11 @@
 import os
 import posixpath
-import urlparse
 import urllib
 import logging
-import BaseHTTPServer
-import SimpleHTTPServer
+import http.server
 
 
-class HTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
+class HTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         """
@@ -87,7 +85,7 @@ class HTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
         """
         # abandon query parameters
-        path = urlparse.urlparse(path)[2]
+        path = urllib.parse.urlparse(path)[2]
         path = posixpath.normpath(urllib.unquote(path))
         words = path.split('/')
         words = filter(None, words)
@@ -117,12 +115,12 @@ class HTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 
 def http_server(port=8000, cwd=None, terminate_callable=None):
-    http = BaseHTTPServer.HTTPServer(('', port), HTTPRequestHandler)
-    http.timeout = 1
+    https = http.server.HTTPServer(('', port), HTTPRequestHandler)
+    https.timeout = 1
 
     if cwd is None:
         cwd = os.getcwd()
-    http.cwd = cwd
+    https.cwd = cwd
 
     while True:
         if terminate_callable is not None:
@@ -133,7 +131,7 @@ def http_server(port=8000, cwd=None, terminate_callable=None):
         if terminate:
             break
 
-        http.handle_request()
+        https.handle_request()
 
 
 if __name__ == '__main__':

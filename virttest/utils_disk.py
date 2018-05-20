@@ -8,7 +8,7 @@ import glob
 import shutil
 import tempfile
 import logging
-import ConfigParser
+import configparser
 import re
 from autotest.client import utils
 from autotest.client.shared import error
@@ -239,7 +239,7 @@ class FloppyDisk(Disk):
                           'floppy. Please verify if your floppy virtio '
                           'driver image has this file')
 
-        parser = ConfigParser.ConfigParser()
+        parser = configparser.ConfigParser()
         parser.read(txtsetup_oem)
 
         if not parser.has_section('Defaults'):

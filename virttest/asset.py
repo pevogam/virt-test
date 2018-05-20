@@ -1,4 +1,4 @@
-import urllib2
+import urllib
 import logging
 import os
 import glob
@@ -250,7 +250,7 @@ def download_file(asset_info, interactive=False, force=False):
     if sha1_url is not None:
         try:
             logging.info("Verifying expected SHA1 sum from %s", sha1_url)
-            sha1_file = urllib2.urlopen(sha1_url)
+            sha1_file = urllib.request.urlopen(sha1_url)
             sha1_contents = sha1_file.read()
             sha1 = sha1_contents.split(" ")[0]
             logging.info("Expected SHA1 sum: %s", sha1)

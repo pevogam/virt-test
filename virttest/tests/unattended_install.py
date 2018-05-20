@@ -3,7 +3,7 @@ import time
 import re
 import os
 import tempfile
-import ConfigParser
+import configparser
 import threading
 import shutil
 import xml.dom.minidom
@@ -359,7 +359,7 @@ class UnattendedInstallConfig(object):
         utils.open_write_close(answer_path, contents)
 
     def answer_windows_ini(self, answer_path):
-        parser = ConfigParser.ConfigParser()
+        parser = configparser.ConfigParser()
         parser.read(self.unattended_file)
         # First, replacing the CDKEY
         if self.cdkey:

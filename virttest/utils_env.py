@@ -118,7 +118,7 @@ def _tcpdump_handler(env, filename, line):
     _update_address_cache(env, line)
 
 
-class Env(UserDict.IterableUserDict):
+class Env(collections.UserDict):
 
     """
     A dict-like object containing global objects used by tests.
@@ -135,7 +135,7 @@ class Env(UserDict.IterableUserDict):
         :param filename: Path to an env file.
         :param version: Required env version (int).
         """
-        UserDict.IterableUserDict.__init__(self)
+        collections.UserDict.__init__(self)
         empty = {"version": version}
         self._filename = filename
         self._tcpdump = None

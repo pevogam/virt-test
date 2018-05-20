@@ -287,7 +287,7 @@ class Messenger(object):
             while (rdata_len < cmd_len):
                 rdata += self.stdin.read(cmd_len - rdata_len)
                 rdata_len = len(rdata)
-            rdataIO = cStringIO.StringIO(self.stdin.decode(rdata))
+            rdataIO = io.StringIO(self.stdin.decode(rdata))
             unp = pickle.Unpickler(rdataIO)
             unp.find_global = _map_path
             data = unp.load()

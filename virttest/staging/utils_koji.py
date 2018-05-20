@@ -1,5 +1,5 @@
-import HTMLParser
-import ConfigParser
+import html.parser
+import configparser
 import os
 import time
 import logging
@@ -28,7 +28,7 @@ class KojiDownloadError(IOError):
                 "Last error: %s" % (self.url, self.timeout, self.last_error))
 
 
-class KojiDirIndexParser(HTMLParser.HTMLParser):
+class KojiDirIndexParser(html.parser.HTMLParser):
 
     '''
     Parser for HTML directory index pages, specialized to look for RPM links
@@ -38,7 +38,7 @@ class KojiDirIndexParser(HTMLParser.HTMLParser):
         '''
         Initializes a new KojiDirListParser instance
         '''
-        HTMLParser.HTMLParser.__init__(self)
+        html.parser.HTMLParser.__init__(self)
         self.package_file_names = []
 
     def handle_starttag(self, tag, attrs):
@@ -211,7 +211,7 @@ class KojiClient(object):
             if not self.is_config_valid():
                 raise ValueError('Koji config "%s" is not valid' % self.config)
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(self.config)
 
         basename = os.path.basename(self.command)
@@ -272,7 +272,7 @@ class KojiClient(object):
             logging.error('Koji config "%s" is not readable', self.config)
             koji_config_ok = False
 
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.read(self.config)
         basename = os.path.basename(self.command)
         if not config.has_section(basename):

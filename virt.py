@@ -2,7 +2,7 @@ import os
 import sys
 import logging
 import imp
-import Queue
+import queue
 from autotest.client import test
 from autotest.client.shared import error
 from virttest import utils_misc, utils_params, utils_env, env_process
@@ -29,7 +29,7 @@ class virt(test.test):
         self.virtdir = os.path.join(virtdir, "shared")
         # Place where virt software will be built/linked
         self.builddir = os.path.join(virtdir, 'backends', params.get("vm_type"))
-        self.background_errors = Queue.Queue()
+        self.background_errors = queue.Queue()
 
     def verify_background_errors(self):
         """
@@ -39,7 +39,7 @@ class virt(test.test):
         """
         try:
             exc = self.background_errors.get(block=False)
-        except Queue.Empty:
+        except queue.Empty:
             pass
         else:
             tp, value, tb = exc[1], None, exc[2]
