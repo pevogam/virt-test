@@ -112,7 +112,7 @@ def _tcpdump_handler(env, filename, line):
     """
     try:
         utils_misc.log_line(filename, line)
-    except Exception, reason:
+    except Exception as reason:
         logging.warn("Can't log tcpdump output, '%s'", reason)
 
     _update_address_cache(env, line)
@@ -159,7 +159,7 @@ class Env(UserDict.IterableUserDict):
                     self.data = empty
             # Almost any exception can be raised during unpickling, so let's
             # catch them all
-            except Exception, e:
+            except Exception as e:
                 logging.warn("Exception thrown while loading env")
                 logging.warn(e)
                 logging.warn("Creating new, empty env file")

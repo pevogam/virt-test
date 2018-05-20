@@ -2596,7 +2596,7 @@ class VM(virt_vm.BaseVM):
                                                                    m_name,
                                                                    m_params,
                                                                    timeout)
-                except qemu_monitor.MonitorConnectError, detail:
+                except qemu_monitor.MonitorConnectError as detail:
                     logging.error(detail)
                     self.destroy()
                     raise
@@ -2675,7 +2675,7 @@ class VM(virt_vm.BaseVM):
                 if self.monitor.verify_status("paused"):
                     try:
                         self.monitor.cmd("cont")
-                    except qemu_monitor.QMPCmdError, e:
+                    except qemu_monitor.QMPCmdError as e:
                         if ((e.data['class'] == "MigrationExpected") and
                                 (migration_mode is not None)):
                             logging.debug("Migration did not start yet...")
@@ -2772,15 +2772,15 @@ class VM(virt_vm.BaseVM):
                     session = self.login()
                 else:
                     session = self.serial_login()
-            except (IndexError), e:
+            except (IndexError) as e:
                 try:
                     session = self.serial_login()
-                except (remote.LoginError, virt_vm.VMError), e:
+                except (remote.LoginError, virt_vm.VMError) as e:
                     logging.debug(e)
                 else:
                     # Successfully get session by serial_login()
                     _shutdown_by_sendline()
-            except (remote.LoginError, virt_vm.VMError), e:
+            except (remote.LoginError, virt_vm.VMError) as e:
                 logging.debug(e)
             else:
                 # There is no exception occurs
@@ -2882,7 +2882,7 @@ class VM(virt_vm.BaseVM):
                 logging.debug("Ending VM %s process (monitor)", self.name)
                 try:
                     self.monitor.quit()
-                except Exception, e:
+                except Exception as e:
                     logging.warn(e)
                     if self.is_dead():
                         logging.warn("VM %s down during try to kill it "
@@ -3093,7 +3093,7 @@ class VM(virt_vm.BaseVM):
                                     (self.monitor.protocol, vcpu_add_cmd))
         try:
             cmd_output = self.monitor.send_args_cmd(vcpu_add_cmd)
-        except qemu_monitor.QMPCmdError, e:
+        except qemu_monitor.QMPCmdError as e:
             return (False, str(e))
 
         vcpu_thread_pattern = self.params.get("vcpu_thread_pattern",
@@ -3794,7 +3794,7 @@ class VM(virt_vm.BaseVM):
         try:
             if self.catch_monitor:
                 self.catch_monitor.screendump(filename=filename, debug=debug)
-        except qemu_monitor.MonitorError, e:
+        except qemu_monitor.MonitorError as e:
             logging.warn(e)
 
     def save_to_file(self, path):

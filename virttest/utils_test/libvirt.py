@@ -675,7 +675,7 @@ def verify_virsh_console(session, user, passwd, timeout=10, debug=False):
         logging.info("output of command:\n%s", output)
         session.close()
     except (aexpect.ShellError,
-            aexpect.ExpectError), detail:
+            aexpect.ExpectError) as detail:
         log = session.get_output()
         logging.error("Verify virsh console failed:\n%s\n%s", detail, log)
         session.close()
@@ -708,7 +708,7 @@ def pci_label_from_address(address_dict, radix=10):
         bus = int(address_dict['bus'], radix)
         slot = int(address_dict['slot'], radix)
         function = int(address_dict['function'], radix)
-    except (TypeError, KeyError), detail:
+    except (TypeError, KeyError) as detail:
         raise error.TestError(detail)
     pci_label = ("pci_%04x_%02x_%02x_%01x" % (domain, bus, slot, function))
     return pci_label
@@ -1069,7 +1069,7 @@ class MigrationTest(object):
                        debug=True)
             etime = int(time.time())
             self.mig_time[vm.name] = etime - stime
-        except error.CmdError, detail:
+        except error.CmdError as detail:
             logging.error("Migration to %s failed:\n%s", desturi, detail)
             self.RET_LOCK.acquire()
             self.RET_MIGRATION = False
@@ -1318,7 +1318,7 @@ def check_iface(iface_name, checkpoint, extra="", **dargs):
         else:
             logging.debug("Support check points are: %s", support_check)
             logging.error("Unsupport check point: %s", checkpoint)
-    except Exception, detail:
+    except Exception as detail:
         raise error.TestFail("Interface check failed: %s" % detail)
     return check_pass
 
@@ -1501,7 +1501,7 @@ def create_disk_xml(params):
         diskxml.readonly = "yes" == params.get("readonly", "no")
         diskxml.share = "yes" == params.get("shareable", "no")
         diskxml.target = {'dev': target_dev, 'bus': target_bus}
-    except Exception, detail:
+    except Exception as detail:
         logging.error("Fail to create disk XML:\n%s", detail)
     logging.debug("Disk XML %s:\n%s", diskxml.xml, str(diskxml))
 
@@ -1661,7 +1661,7 @@ def create_net_xml(net_name, params):
         netxml.xmltreefile.write()
         return netxml
 
-    except Exception, detail:
+    except Exception as detail:
         utils.log_last_traceback()
         raise error.TestFail("Fail to create network XML: %s" % detail)
 
@@ -1778,7 +1778,7 @@ def create_nwfilter_xml(params):
         logging.info("The network filter xml is:\n%s" % filterxml)
         return filterxml
 
-    except Exception, detail:
+    except Exception as detail:
         utils.log_last_traceback()
         raise error.TestFail("Fail to create nwfilter XML: %s" % detail)
 
@@ -2252,7 +2252,7 @@ def create_scsi_disk(scsi_option, scsi_size="2048"):
                               "awk '{print $6}'").stdout.strip()
         logging.info("scsi disk: %s" % scsi_disk)
         return scsi_disk
-    except Exception, e:
+    except Exception as e:
         logging.error(str(e))
         return None
 
@@ -2415,7 +2415,7 @@ def define_new_vm(vm_name, new_name):
         del vmxml.uuid
         vmxml.define()
         return True
-    except xcepts.LibvirtXMLError, detail:
+    except xcepts.LibvirtXMLError as detail:
         logging.error(detail)
         return False
 
@@ -2433,7 +2433,7 @@ def remotely_control_libvirtd(server_ip, server_user, server_pwd,
         logging.info("%s libvirt daemon\n", action)
         service_libvirtd_control(action, session)
         session.close()
-    except (remote.LoginError, aexpect.ShellError, error.CmdError), detail:
+    except (remote.LoginError, aexpect.ShellError, error.CmdError) as detail:
         if session:
             session.close()
         if status_error == "no":
@@ -2492,7 +2492,7 @@ def connect_libvirtd(uri, read_only="", virsh_cmd="list", auth_user=None,
 
         session.close()
         return True
-    except (aexpect.ShellError, aexpect.ExpectError), details:
+    except (aexpect.ShellError, aexpect.ExpectError) as details:
         log = session.get_output()
         session.close()
         logging.error("Failed to connect libvirtd: %s\n%s", details, log)
@@ -2560,7 +2560,7 @@ def do_migration(vm_name, uri, extra, auth_pwd, auth_user="root",
 
         session.close()
         return True
-    except (aexpect.ShellError, aexpect.ExpectError), details:
+    except (aexpect.ShellError, aexpect.ExpectError) as details:
         log = session.get_output()
         session.close()
         logging.error("Failed to migrate %s: %s\n%s", vm_name, details, log)
@@ -2660,7 +2660,7 @@ def exec_virsh_edit(source, edit_cmd, connect_uri="qemu:///system"):
         remote.handle_prompts(session, None, None, r"[\#\$]\s*$", debug=True)
         session.close()
         return True
-    except Exception, e:
+    except Exception as e:
         session.close()
         logging.error("Error occurred: %s", e)
         return False
@@ -2704,5 +2704,5 @@ def update_polkit_rule(params, pattern, new_value):
         polkit_f.close()
         logging.debug("New polkit config rule is:\n%s", new_rule)
         polkit.polkitd.restart()
-    except IOError, e:
+    except IOError as e:
         logging.error(e)

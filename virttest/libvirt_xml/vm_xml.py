@@ -639,7 +639,7 @@ class VMXML(VMXMLBase):
             if not vmxml.define():
                 raise xcepts.LibvirtXMLError(error_msg + "%s"
                                              % vmxml.get('xml'))
-        except error.CmdError, detail:
+        except error.CmdError as detail:
             del vmxml  # clean up temporary files
             # Allow exceptions thrown here since state will be undefined
             backup.define()
@@ -889,7 +889,7 @@ class VMXML(VMXMLBase):
                 target = address.get("target")
                 unit = address.get("unit")
                 address_str = "%s:%s.%s.%s" % (disk_bus, bus, target, unit)
-        except AttributeError, e:
+        except AttributeError as e:
             raise xcepts.LibvirtXMLError("Get wrong attribute: %s" % str(e))
         return address_str
 

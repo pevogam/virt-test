@@ -73,7 +73,7 @@ def connect(params):
             return (_api, version)
         else:
             return (_api, version)
-    except Exception, e:
+    except Exception as e:
         logging.error('Failed to connect: %s\n' % str(e))
     else:
         logging.info('Succeed to connect oVirt/Rhevm manager\n')
@@ -150,7 +150,7 @@ class VMManager(virt_vm.BaseVM):
             for i in range(len(vms)):
                 vm_list.append(vms[i].name)
             return vm_list
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get vms:\n%s' % str(e))
 
     def state(self):
@@ -160,7 +160,7 @@ class VMManager(virt_vm.BaseVM):
         try:
             self.update_instance()
             return self.instance.status.state
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get %s status:\n%s' % (self.name, str(e)))
 
     def get_mac_address(self, net_name='*'):
@@ -169,7 +169,7 @@ class VMManager(virt_vm.BaseVM):
         """
         try:
             return self.instance.nics.get(name=net_name).get_mac().get_address()
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get %s status:\n%s' % (self.name, str(e)))
 
     def lookup_by_storagedomains(self, storage_name):
@@ -179,7 +179,7 @@ class VMManager(virt_vm.BaseVM):
         try:
             storage = self.api.storagedomains.get(storage_name)
             return storage.vms.get(self.name)
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get %s from %s:\n%s' % (self.name,
                                                              storage_name, str(e)))
 
@@ -249,7 +249,7 @@ class VMManager(virt_vm.BaseVM):
                 if self.is_paused():
                     vm_suspend = True
                     break
-            except Exception, e:
+            except Exception as e:
                 if e.reason == 'Bad Request' \
                         and 'asynchronous running tasks' in e.detail:
                     logging.warning("VM has asynchronous running tasks, "
@@ -281,7 +281,7 @@ class VMManager(virt_vm.BaseVM):
                     raise WaitVMStateTimeoutError("RESUME", self.state())
             else:
                 logging.debug('VM already up')
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to resume VM:\n%s' % str(e))
 
     def shutdown(self, gracefully=True, timeout=300):
@@ -345,7 +345,7 @@ class VMManager(virt_vm.BaseVM):
         vm = self.lookup_by_storagedomains(export_name)
         try:
             vm.delete()
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to remove VM:\n%s' % str(e))
 
     def import_from_export_domain(self, export_name, storage_name,
@@ -448,7 +448,7 @@ class VMManager(virt_vm.BaseVM):
                 time.sleep(1)
             if not vm_down:
                 raise WaitVMStateTimeoutError("DOWN", self.state())
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to create a template from VM:\n%s' % str(e))
 
     def add(self, memory, disk_size, cluster_name, storage_name,
@@ -512,7 +512,7 @@ class VMManager(virt_vm.BaseVM):
                 time.sleep(1)
             if not vm_down:
                 raise WaitVMStateTimeoutError("DOWN", self.state())
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to create VM with disk and NIC\n%s' % str(e))
 
     def add_vm_from_template(self, cluster_name, template_name='Blank',
@@ -543,7 +543,7 @@ class VMManager(virt_vm.BaseVM):
             if not vm_down:
                 raise WaitVMStateTimeoutError("DOWN", self.state())
             logging.info('VM was created from template successfully')
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to create VM from template:\n%s' % str(e))
 
     def get_address(self, index=0):
@@ -592,7 +592,7 @@ class DataCenterManager(object):
             for i in range(len(dcs)):
                 dc_list.append(dcs[i].name)
             return dc_list
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get data centers:\n%s' % str(e))
 
     def add(self, storage_type):
@@ -606,7 +606,7 @@ class DataCenterManager(object):
                          % (storage_type, self.name))
             if self.api.datacenters.add(param.DataCenter(name=self.name, storage_type=storage_type, version=self.version)):
                 logging.info('Data center was created successfully')
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to create data center:\n%s' % str(e))
 
 
@@ -635,7 +635,7 @@ class ClusterManager(object):
             for i in range(len(clusters)):
                 cluster_list.append(clusters[i].name)
             return cluster_list
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get clusters:\n%s' % str(e))
 
     def add(self, dc_name, cpu_type='Intel Nehalem Family'):
@@ -654,7 +654,7 @@ class ClusterManager(object):
                                                    data_center=dc,
                                                    version=self.version)):
                 logging.info('Cluster was created successfully')
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to create cluster:\n%s' % str(e))
 
 
@@ -683,7 +683,7 @@ class HostManager(object):
             for i in range(len(hosts)):
                 host_list.append(hosts[i].name)
             return host_list
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get hosts:\n%s' % str(e))
 
     def state(self):
@@ -692,7 +692,7 @@ class HostManager(object):
         """
         try:
             return self.instance.status.state
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get %s status:\n%s' % (self.name, str(e)))
 
     def add(self, host_address, host_password, cluster_name, timeout=300):
@@ -720,7 +720,7 @@ class HostManager(object):
                 if not host_up:
                     raise WaitHostStateTimeoutError("UP", self.state())
                 logging.info('Host was installed successfully')
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to install host:\n%s' % str(e))
 
     def get_address(self):
@@ -730,7 +730,7 @@ class HostManager(object):
         try:
             logging.info('Get host %s IP' % self.name)
             return self.instance.get_address()
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get host %s IP address:\n%s' %
                           (self.name, str(e)))
 
@@ -760,7 +760,7 @@ class StorageDomainManager(object):
             for i in range(len(storages)):
                 storage_list.append(storages[i].name)
             return storage_list
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to get storage domains:\n%s' % str(e))
 
     def attach_iso_export_domain_into_datacenter(self, address, path,
@@ -808,6 +808,6 @@ class StorageDomainManager(object):
                     name).activate():
                 logging.info('%s domain was activated successfully'
                              % domain_type)
-        except Exception, e:
+        except Exception as e:
             logging.error('Failed to add %s domain:\n%s'
                           % (domain_type, str(e)))

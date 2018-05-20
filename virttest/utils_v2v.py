@@ -643,7 +643,7 @@ def import_vm_to_ovirt(params, address_cache, timeout=600):
                                      cluster_name,
                                      timeout=timeout)
         logging.info("The latest VM list: %s" % vm.list())
-    except Exception, e:
+    except Exception as e:
         # Try to delete the vm from export domain
         vm.delete_from_export_domain(export_name)
         logging.error("Import %s failed: %s", vm.name, e)
@@ -651,7 +651,7 @@ def import_vm_to_ovirt(params, address_cache, timeout=600):
     try:
         # Start VM
         vm.start(wait_for_up=wait_for_up)
-    except Exception, e:
+    except Exception as e:
         logging.error("Start %s failed: %s", vm.name, e)
         return False
     return True

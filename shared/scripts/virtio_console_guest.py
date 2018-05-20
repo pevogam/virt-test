@@ -27,7 +27,7 @@ else:   # Windows
     os_linux = False
     try:
         import win32file
-    except ImportError, failure_detail:
+    except ImportError as failure_detail:
         print("Import failed. Do you have ctypes and pywin32 installed?")
         raise failure_detail
 
@@ -436,7 +436,7 @@ class VirtioGuestPosix(VirtioGuest):
                     desc = self.in_files[i]
                     try:
                         data += os.read(desc, self.cachesize)
-                    except OSError, inst:
+                    except OSError as inst:
                         if inst.errno == 9:
                             # Wait 0.1 before spoiling output with additional
                             # log information.
@@ -479,7 +479,7 @@ class VirtioGuestPosix(VirtioGuest):
                                     break
                                 os.write(desc, data)
                                 written = True
-                            except OSError, inst:
+                            except OSError as inst:
                                 if inst.errno == 9:
                                     # Wait 0.1 before spoiling output with
                                     # additional log information.
@@ -569,7 +569,7 @@ class VirtioGuestPosix(VirtioGuest):
                         print(os.system("stty -F %s raw -echo" % (path)))
                         print(os.system("stty -F %s -a" % (path)))
                     f.append(self.files[path])
-                except Exception, inst:
+                except Exception as inst:
                     print("FAIL: Failed to open file %s" % (path))
                     raise inst
         return f
@@ -629,7 +629,7 @@ class VirtioGuestPosix(VirtioGuest):
 
         try:
             os.lseek(fd, pos, how)
-        except Exception, inst:
+        except Exception as inst:
             if inst.errno == 29:
                 print("PASS: the lseek failed as expected")
             else:
@@ -654,7 +654,7 @@ class VirtioGuestPosix(VirtioGuest):
             else:
                 fcntl.fcntl(fd, fcntl.F_SETFL, fl & ~os.O_NONBLOCK)
 
-        except Exception, inst:
+        except Exception as inst:
             print("FAIL: Setting (non)blocking mode: " + str(inst))
             return
 
@@ -750,7 +750,7 @@ class VirtioGuestPosix(VirtioGuest):
                 os.kill(os.getpid(), signal.SIGUSR1)
                 self.use_config.wait()
 
-        except Exception, inst:
+        except Exception as inst:
             print("FAIL: Setting (a)sync mode: " + str(inst))
             return
 
@@ -774,7 +774,7 @@ class VirtioGuestPosix(VirtioGuest):
             if descriptor is not None:
                 try:
                     os.close(descriptor)
-                except Exception, inst:
+                except Exception as inst:
                     print("FAIL: Closing the file: " + str(inst))
                     return
         print("PASS: Close")
@@ -795,7 +795,7 @@ class VirtioGuestPosix(VirtioGuest):
                     print(os.system("stty -F %s raw -echo" % (name)))
                 opened = True
                 break
-            except Exception, exc:
+            except Exception as exc:
                 print(str(exc))
                 time.sleep(0.1)
         if opened:
@@ -888,7 +888,7 @@ class VirtioGuestPosix(VirtioGuest):
                 data += "%c" % random.randrange(255)
             try:
                 writes = os.write(in_f[0], data)
-            except Exception, inst:
+            except Exception as inst:
                 print(inst)
         else:
             while len(data) < 4096:
@@ -897,7 +897,7 @@ class VirtioGuestPosix(VirtioGuest):
             while (writes < length):
                 try:
                     writes += os.write(in_f[0], data)
-                except Exception, inst:
+                except Exception as inst:
                     print(inst)
         if writes >= length:
             print("PASS: Send data length %d" % writes)
@@ -918,13 +918,13 @@ class VirtioGuestPosix(VirtioGuest):
         recvs = ""
         try:
             recvs = os.read(in_f[0], bfr)
-        except Exception, inst:
+        except Exception as inst:
             print(inst)
         if mode:
             while (len(recvs) < length):
                 try:
                     recvs += os.read(in_f[0], bfr)
-                except Exception, inst:
+                except Exception as inst:
                     print(inst)
         if len(recvs) >= length:
             print("PASS: Recv data length %d" % len(recvs))
@@ -1028,7 +1028,7 @@ class VirtioGuestNt(VirtioGuest):
             if hFile is not None:
                 try:
                     win32file.CloseHandle(hFile)
-                except win32file.error, inst:
+                except win32file.error as inst:
                     print("FAIL: Closing the file: " + str(inst))
                     return
         print("PASS: Close")
@@ -1070,7 +1070,7 @@ class VirtioGuestNt(VirtioGuest):
                                                     win32file.OPEN_EXISTING,
                                                     win32file.FILE_ATTRIBUTE_NORMAL,
                                                     None)
-        except win32file.error, exc_detail:
+        except win32file.error as exc_detail:
             print("%s\nFAIL: Failed open file %s" % (str(exc_detail), name))
             return exc_detail
         print("PASS: All files opened correctly.")
@@ -1206,7 +1206,7 @@ class VirtioGuestNt(VirtioGuest):
                            "err=%s, sentlen=%s" % (_ret, _len))
                     raise IOError(msg)
                 writes = _len
-            except Exception, inst:
+            except Exception as inst:
                 print(inst)
         else:
             while len(data) < 4096:
@@ -1221,7 +1221,7 @@ class VirtioGuestNt(VirtioGuest):
                                                                 writes))
                         raise IOError(msg)
                     writes += _len
-            except Exception, inst:
+            except Exception as inst:
                 print(inst)
         if writes >= length:
             print("PASS: Send data length %d" % writes)
@@ -1247,7 +1247,7 @@ class VirtioGuestNt(VirtioGuest):
                        "err=%s, read=%s" % (_ret, _data))
                 raise IOError(msg)
             recvs = _data
-        except Exception, inst:
+        except Exception as inst:
             print(inst)
         if mode:
             while (len(recvs) < length):
@@ -1258,7 +1258,7 @@ class VirtioGuestNt(VirtioGuest):
                                "err=%s, read=%s, allread=%s" % (_ret, _data,
                                                                 len(recvs)))
                         raise IOError(msg)
-                except Exception, inst:
+                except Exception as inst:
                     print(inst)
         if len(recvs) >= length:
             print("PASS: Recv data length %d" % len(recvs))
@@ -1372,7 +1372,7 @@ class Daemon:
                             opens.append([pid, mode])
                     except OSError:
                         continue
-            except OSError, e:
+            except OSError as e:
                 if e.errno == 2:
                     continue
                 raise
@@ -1386,7 +1386,7 @@ class Daemon:
             pid = os.fork()
             if pid > 0:
                 return False
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write("Daemonize failed: %s\n" % (e))
             sys.exit(1)
 
@@ -1398,7 +1398,7 @@ class Daemon:
             pid = os.fork()
             if pid > 0:
                 sys.exit(0)
-        except OSError, e:
+        except OSError as e:
             sys.stderr.write("Daemonize failed: %s\n" % (e))
             sys.exit(1)
 
@@ -1476,7 +1476,7 @@ def main():
     for f in [stdin, stdout, stderr]:
         try:
             os.mkfifo(f)
-        except OSError, e:
+        except OSError as e:
             if e.errno == 17:
                 pass
 

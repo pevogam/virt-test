@@ -144,7 +144,7 @@ def wait_for_create_monitor(vm, monitor_name, monitor_params, timeout):
     while time.time() < end_time:
         try:
             return create_monitor(vm, monitor_name, monitor_params)
-        except MonitorError, e:
+        except MonitorError as e:
             logging.warn(e)
             time.sleep(1)
     else:
@@ -186,7 +186,7 @@ class Monitor:
 
         try:
             self._socket.connect(filename)
-        except socket.error, details:
+        except socket.error as details:
             vm_name = "" if not hasattr(self.vm, "name") else self.vm.name
             raise MonitorConnectError("Could not connect to monitor (%s-%s) "
                                       "socket: %s" % (name, vm_name, details))
@@ -242,7 +242,7 @@ class Monitor:
         timeout = max(0, timeout)
         try:
             return bool(select.select([self._socket], [], [], timeout)[0])
-        except socket.error, e:
+        except socket.error as e:
             raise MonitorSocketError("Verifying data on monitor socket", e)
 
     def _recvall(self):
@@ -250,7 +250,7 @@ class Monitor:
         while self._data_available():
             try:
                 data = self._socket.recv(1024)
-            except socket.error, e:
+            except socket.error as e:
                 raise MonitorSocketError("Could not receive data from monitor",
                                          e)
             if not data:
@@ -299,7 +299,7 @@ class Monitor:
                     self.open_log_files[log] = open(log, "w")
                 for line in log_str.splitlines():
                     self.open_log_files[log].write("%s: %s\n" % (timestr, line))
-            except Exception, err:
+            except Exception as err:
                 txt = "Fail to record log to %s.\n" % log
                 txt += "Log content: %s\n" % log_str
                 txt += "Exception error: %s" % err
@@ -599,7 +599,7 @@ class HumanMonitor(Monitor):
                 # take a default value if can't get on/off string from monitor.
                 self.on_str, self.off_str = "on", "off"
 
-        except MonitorError, e:
+        except MonitorError as e:
             self._close_sock()
             if suppress_exceptions:
                 logging.warn(e)
@@ -646,7 +646,7 @@ class HumanMonitor(Monitor):
             try:
                 self._socket.sendall(cmd + "\n")
                 self._log_lines(cmd)
-            except socket.error, e:
+            except socket.error as e:
                 raise MonitorSocketError("Could not send monitor command %r" %
                                          cmd, e)
         finally:
@@ -1200,7 +1200,7 @@ class QMPMonitor(Monitor):
             self._get_supported_cmds()
             self._get_supported_hmp_cmds()
 
-        except MonitorError, e:
+        except MonitorError as e:
             self._close_sock()
             if suppress_exceptions:
                 logging.warn(e)
@@ -1265,7 +1265,7 @@ class QMPMonitor(Monitor):
         try:
             self._socket.sendall(data)
             self._log_lines(str(data))
-        except socket.error, e:
+        except socket.error as e:
             raise MonitorSocketError("Could not send data: %r" % data, e)
 
     def _get_response(self, q_id=None, timeout=RESPONSE_TIMEOUT):
@@ -1753,7 +1753,7 @@ class QMPMonitor(Monitor):
         args['uri'] = re.sub('"', "", args['uri'])
         try:
             return self.cmd("migrate", args)
-        except QMPCmdError, e:
+        except QMPCmdError as e:
             if e.data['class'] in ['SockConnectInprogress', 'GenericError']:
                 logging.debug(
                     "Migrate socket connection still initializing...")

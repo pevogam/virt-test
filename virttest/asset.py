@@ -254,7 +254,7 @@ def download_file(asset_info, interactive=False, force=False):
             sha1_contents = sha1_file.read()
             sha1 = sha1_contents.split(" ")[0]
             logging.info("Expected SHA1 sum: %s", sha1)
-        except Exception, e:
+        except Exception as e:
             logging.error("Failed to get SHA1 from file: %s", e)
     else:
         sha1 = None

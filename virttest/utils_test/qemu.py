@@ -957,7 +957,7 @@ class MultihostMigrationFd(MultihostMigration):
             try:
                 sock.connect((host, port))
                 break
-            except socket.error, err:
+            except socket.error as err:
                 (code, _) = err
                 if (code != errno.ECONNREFUSED):
                     raise
@@ -1328,7 +1328,7 @@ class GuestSuspend(object):
         try:
             session = self._get_session()
             self._session_cmd_close(session, suspend_bg_program_kill_cmd)
-        except Exception, e:
+        except Exception as e:
             logging.warn("Could not stop background program: '%s'", e)
             pass
 

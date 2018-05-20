@@ -240,7 +240,7 @@ def preprocess_vm(test, params, env, name):
 
             logging.info("Kernel command line get from serial port is"
                          " as expect")
-        except Exception, err:
+        except Exception as err:
             logging.warn("Did not get the kernel command line from serial "
                          "port output. Skip the kernel command line check."
                          "Error is %s" % err)
@@ -298,7 +298,7 @@ def postprocess_image(test, params, image_name, vm_process_status=None):
                 image.backup_image(params, base_dir, "backup", True)
             elif params.get("restore_image", "no") == "yes":
                 image.backup_image(params, base_dir, "restore", True)
-        except Exception, e:
+        except Exception as e:
             if params.get("restore_image_on_check_error", "no") == "yes":
                 image.backup_image(params, base_dir, "restore", True)
             if params.get("remove_image_on_check_error", "no") == "yes":
@@ -376,7 +376,7 @@ def process_command(test, params, env, command, command_timeout,
     # Execute commands
     try:
         utils.system("cd %s; %s" % (test.bindir, command))
-    except error.CmdError, e:
+    except error.CmdError as e:
         if command_noncritical:
             logging.warn(e)
         else:
@@ -481,7 +481,11 @@ def _process_images_parallel(image_func, test, params, vm_process_status=None):
         logging.error("Image processing failed:")
         for thread in threads:
             if thread.exc_info:     # Throw the first failure
-                raise thread.exc_info[1], None, thread.exc_info[2]
+                tp, tb = thread.exc_info[1], thread.exc_info[2]
+                value = tp()
+                if value.__traceback__ is not tb:
+                    raise value.with_traceback(tb)
+                raise value
     del exit_event
     del threads[:]
 
@@ -561,7 +565,7 @@ def preprocess(test, params, env):
         for cmd in params.get("cmds_installed_host").split():
             try:
                 os_dep.command(cmd)
-            except ValueError, msg:
+            except ValueError as msg:
                 raise error.TestNAError(msg.message)
 
     vm_type = params.get('vm_type')
@@ -720,11 +724,11 @@ def preprocess(test, params, env):
             pol = test_setup.LibvirtPolkitConfig(params)
             try:
                 pol.setup()
-            except test_setup.PolkitWriteLibvirtdConfigError, e:
+            except test_setup.PolkitWriteLibvirtdConfigError as e:
                 logging.error(str(e))
-            except test_setup.PolkitRulesSetupError, e:
+            except test_setup.PolkitRulesSetupError as e:
                 logging.error(str(e))
-            except Exception, e:
+            except Exception as e:
                 logging.error("Unexpected error: '%s'" % str(e))
             libvirtd_inst.restart()
 
@@ -867,7 +871,7 @@ def postprocess(test, params, env):
     try:
         process(test, params, env, postprocess_image, postprocess_vm,
                 vm_first=True)
-    except Exception, details:
+    except Exception as details:
         err += "\nPostprocess: %s" % str(details).replace('\\n', '\n  ')
         logging.error(details)
 
@@ -896,7 +900,7 @@ def postprocess(test, params, env):
                 logging.debug("Encoding video file %s", video_file)
                 video.start(screendump_dir, video_file)
 
-            except Exception, detail:
+            except Exception as detail:
                 logging.info(
                     "Video creation failed for %s: %s", screendump_dir, detail)
 
@@ -962,7 +966,7 @@ def postprocess(test, params, env):
                     session = vm.wait_for_serial_login(
                         timeout=vm.LOGIN_WAIT_TIMEOUT)
                     session.close()
-            except (remote.LoginError, virt_vm.VMError, IndexError), e:
+            except (remote.LoginError, virt_vm.VMError, IndexError) as e:
                 logging.warn(e)
                 vm.destroy(gracefully=False)
 
@@ -1011,7 +1015,7 @@ def postprocess(test, params, env):
             h.cleanup()
             if vm_type == "libvirt":
                 libvirtd_inst.restart()
-        except Exception, details:
+        except Exception as details:
             err += "\nHP cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1019,7 +1023,7 @@ def postprocess(test, params, env):
         try:
             thp = test_setup.TransparentHugePageConfig(test, params)
             thp.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\nTHP cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1027,7 +1031,7 @@ def postprocess(test, params, env):
         try:
             ksm = test_setup.KSMConfig(params, env)
             ksm.cleanup(env)
-        except Exception, details:
+        except Exception as details:
             err += "\nKSM cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1035,7 +1039,7 @@ def postprocess(test, params, env):
         try:
             egd = test_setup.EGDConfig(params, env)
             egd.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\negd.pl cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1045,10 +1049,10 @@ def postprocess(test, params, env):
                 pol = test_setup.LibvirtPolkitConfig(params)
                 pol.cleanup()
                 libvirtd_inst.restart()
-            except test_setup.PolkitConfigCleanupError, e:
+            except test_setup.PolkitConfigCleanupError as e:
                 err += "\nPolkit cleanup: %s" % str(e).replace('\\n', '\n  ')
                 logging.error(e)
-            except Exception, details:
+            except Exception as details:
                 err += "\nPolkit cleanup: %s" % str(details
                                                     ).replace('\\n', '\n  ')
                 logging.error("Unexpected error: %s" % details)
@@ -1084,7 +1088,7 @@ def postprocess(test, params, env):
             process_command(test, params, env, params.get("post_command"),
                             int(params.get("post_command_timeout", "600")),
                             params.get("post_command_noncritical") == "yes")
-        except Exception, details:
+        except Exception as details:
             err += "\nPostprocess command: %s" % str(details).replace('\n',
                                                                       '\n  ')
             logging.error(details)
@@ -1094,7 +1098,7 @@ def postprocess(test, params, env):
         try:
             iscsidev = qemu_storage.Iscsidev(params, base_dir, "iscsi")
             iscsidev.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\niscsi cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1102,7 +1106,7 @@ def postprocess(test, params, env):
         try:
             lvmdev = env.get_lvmdev("lvm_%s" % params["main_vm"])
             lvmdev.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\nLVM cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
         env.unregister_lvmdev("lvm_%s" % params["main_vm"])
@@ -1111,7 +1115,7 @@ def postprocess(test, params, env):
         try:
             image_nfs = nfs.Nfs(params)
             image_nfs.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\nnfs cleanup: %s" % str(details).replace('\\n', '\n  ')
 
     setup_pb = False
@@ -1136,7 +1140,7 @@ def postprocess(test, params, env):
             else:
                 brcfg = test_setup.PrivateBridgeConfig(params_pb)
             brcfg.cleanup()
-        except Exception, details:
+        except Exception as details:
             err += "\nPB cleanup: %s" % str(details).replace('\\n', '\n  ')
             logging.error(details)
 
@@ -1197,10 +1201,10 @@ def _take_screendumps(test, params, env):
             vm_pid = vm.get_pid()
             try:
                 vm.screendump(filename=temp_filename, debug=False)
-            except qemu_monitor.MonitorError, e:
+            except qemu_monitor.MonitorError as e:
                 logging.warn(e)
                 continue
-            except AttributeError, e:
+            except AttributeError as e:
                 logging.warn(e)
                 continue
             if not os.path.exists(temp_filename):
@@ -1251,7 +1255,7 @@ def _take_screendumps(test, params, env):
                         image.save(screendump_filename, format="JPEG",
                                    quality=quality)
                         cache[image_hash] = screendump_filename
-                    except IOError, error_detail:
+                    except IOError as error_detail:
                         logging.warning("VM '%s' failed to produce a "
                                         "screendump: %s", vm.name, error_detail)
                         # Decrement the counter as we in fact failed to
@@ -1287,10 +1291,10 @@ def store_vm_register(vm, log_filename, append=False):
     try:
         output = vm.catch_monitor.info('registers', debug=False)
         timestamp = time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime())
-    except qemu_monitor.MonitorError, err:
+    except qemu_monitor.MonitorError as err:
         logging.warn(err)
         return False
-    except AttributeError, err:
+    except AttributeError as err:
         logging.warn(err)
         return False
 

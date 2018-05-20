@@ -348,7 +348,7 @@ class IscsiTGT(_IscsiComm):
             cmd += " --user %s" % self.chap_user
             cmd += " --password %s" % self.chap_passwd
             utils.system(cmd)
-        except error.CmdError, err:
+        except error.CmdError as err:
             logging.error("Fail to add account: %s", err)
 
         # Check the new add account exist

@@ -1013,7 +1013,7 @@ class BaseVM(object):
             try:
                 return self.login(nic_index, internal_timeout,
                                   username, password)
-            except (remote.LoginError, VMError), e:
+            except (remote.LoginError, VMError) as e:
                 self.verify_alive()
                 e = str(e)
                 if e not in error_messages:
@@ -1211,7 +1211,7 @@ class BaseVM(object):
                     except Exception:
                         pass
                 return session
-            except remote.LoginError, e:
+            except remote.LoginError as e:
                 self.verify_alive()
                 e = str(e)
                 if e not in error_messages:

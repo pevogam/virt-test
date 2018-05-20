@@ -42,7 +42,12 @@ class virt(test.test):
         except Queue.Empty:
             pass
         else:
-            raise exc[1], None, exc[2]
+            tp, value, tb = exc[1], None, exc[2]
+            if value is None:
+                value = tp()
+            if value.__traceback__ is not tb:
+                raise value.with_traceback(tb)
+            raise value
 
     def run_once(self, params):
         # Convert params to a Params object
@@ -160,7 +165,7 @@ class virt(test.test):
                         raise error.TestWarn("funcatexit failed with: %s"
                                              % error_message)
 
-                except Exception, e:
+                except Exception as e:
                     if t_type is not None:
                         error_message = funcatexit.run_exitfuncs(env, t_type)
                         if error_message:
@@ -179,7 +184,7 @@ class virt(test.test):
                 try:
                     try:
                         env_process.postprocess(self, params, env)
-                    except Exception, e:
+                    except Exception as e:
                         if test_passed:
                             raise
                         logging.error("Exception raised during "
@@ -187,7 +192,7 @@ class virt(test.test):
                 finally:
                     env.save()
 
-        except Exception, e:
+        except Exception as e:
             if params.get("abort_on_error") != "yes":
                 raise
             # Abort on error

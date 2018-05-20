@@ -165,7 +165,11 @@ class Test(object):
         except Queue.Empty:
             pass
         else:
-            raise exc[1], None, exc[2]
+            tp, tb = exc[0], exc[2]
+            value = tp()
+            if value.__traceback__ is not tb:
+                raise value.with_traceback(tb)
+            raise value
 
     def run_once(self):
         params = self.params
@@ -290,7 +294,7 @@ class Test(object):
                         raise error.TestWarn("funcatexit failed with: %s"
                                              % error_message)
 
-                except Exception, e:
+                except Exception as e:
                     if (t_type is not None):
                         error_message = funcatexit.run_exitfuncs(env, t_type)
                         if error_message:
@@ -306,7 +310,7 @@ class Test(object):
                 try:
                     try:
                         env_process.postprocess(self, params, env)
-                    except Exception, e:
+                    except Exception as e:
                         if test_passed:
                             raise
                         logging.error("Exception raised during "
@@ -314,7 +318,7 @@ class Test(object):
                 finally:
                     env.save()
 
-        except Exception, e:
+        except Exception as e:
             if params.get("abort_on_error") != "yes":
                 raise
             # Abort on error
@@ -748,7 +752,7 @@ def bootstrap_tests(options):
     reason = None
     try:
         bg.join()
-    except Exception, e:
+    except Exception as e:
         failed = True
         reason = e
 
@@ -857,7 +861,7 @@ def run_tests(parser, options):
         os.makedirs(debugdir)
     try:
         os.unlink(latestdir)
-    except OSError, detail:
+    except OSError as detail:
         pass
     os.symlink(debugbase, latestdir)
 
@@ -987,7 +991,7 @@ def run_tests(parser, options):
                 finally:
                     t_end = time.time()
                     t_elapsed = t_end - t_begin
-            except error.TestError, reason:
+            except error.TestError as reason:
                 n_tests_failed += 1
                 logging.info("ERROR %s -> %s: %s", t.tag,
                              reason.__class__.__name__, reason)
@@ -996,7 +1000,7 @@ def run_tests(parser, options):
                 print_error(t_elapsed, open_fd=options.vt_show_open_fd)
                 status_dct[dct.get("name")] = False
                 continue
-            except error.TestNAError, reason:
+            except error.TestNAError as reason:
                 n_tests_skipped += 1
                 logging.info("SKIP %s -> %s: %s", t.tag,
                              reason.__class__.__name__, reason)
@@ -1005,7 +1009,7 @@ def run_tests(parser, options):
                 print_skip(open_fd=options.vt_show_open_fd)
                 status_dct[dct.get("name")] = False
                 continue
-            except error.TestWarn, reason:
+            except error.TestWarn as reason:
                 logging.info("WARN %s -> %s: %s", t.tag,
                              reason.__class__.__name__,
                              reason)
@@ -1014,7 +1018,7 @@ def run_tests(parser, options):
                 print_warn(t_elapsed, open_fd=options.vt_show_open_fd)
                 status_dct[dct.get("name")] = True
                 continue
-            except Exception, reason:
+            except Exception as reason:
                 n_tests_failed += 1
                 exc_type, exc_value, exc_traceback = sys.exc_info()
                 logging.error("")

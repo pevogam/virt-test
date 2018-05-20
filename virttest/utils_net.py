@@ -637,7 +637,7 @@ class Macvtap(Interface):
         device = self.get_device()
         try:
             return os.open(device, os.O_RDWR)
-        except OSError, e:
+        except OSError as e:
             raise TAPModuleError(device, "open", e)
 
 
@@ -687,7 +687,7 @@ class IPAddress(object):
                 self.version = 'ipv4'
                 self.packed_addr = socket.inet_pton(socket.AF_INET, ip_str)
                 self.addr = socket.inet_ntop(socket.AF_INET, self.packed_addr)
-        except socket.error, detail:
+        except socket.error as detail:
             if 'illegal IP address' in str(detail):
                 self.addr = ip_str
                 self.version = 'hostname'
@@ -793,7 +793,7 @@ def create_macvtap(ifname, mode="vepa", base_if=None, mac_addr=None):
         if mac_addr:
             o_macvtap.set_mac(mac_addr)
         return o_macvtap
-    except Exception, e:
+    except Exception as e:
         raise MacvtapCreationError(ifname, base_if, e)
 
 
@@ -922,7 +922,7 @@ class Bridge(object):
         """
         try:
             self._br_ioctl(arch.SIOCBRADDIF, brname, ifname)
-        except IOError, details:
+        except IOError as details:
             raise BRAddIfError(ifname, brname, details)
 
     def del_port(self, brname, ifname):
@@ -934,7 +934,7 @@ class Bridge(object):
         """
         try:
             self._br_ioctl(arch.SIOCBRDELIF, brname, ifname)
-        except IOError, details:
+        except IOError as details:
             raise BRDelIfError(ifname, brname, details)
 
     def add_bridge(self, brname):
@@ -977,7 +977,7 @@ def __init_openvswitch(func):
                 __ovs.init_system()
                 if (not __ovs.check()):
                     raise Exception("Check of OpenVSwitch failed.")
-            except Exception, e:
+            except Exception as e:
                 logging.debug("Host does not support OpenVSwitch: %s", e)
 
         return func(*args, **kargs)
@@ -1060,7 +1060,7 @@ def open_tap(devname, ifname, queues=1, vnet_hdr=True):
     for i in range(int(queues)):
         try:
             tapfds.append(str(os.open(devname, os.O_RDWR)))
-        except OSError, e:
+        except OSError as e:
             raise TAPModuleError(devname, "open", e)
 
         flags = arch.IFF_TAP | arch.IFF_NO_PI
@@ -1076,7 +1076,7 @@ def open_tap(devname, ifname, queues=1, vnet_hdr=True):
         ifr = struct.pack("16sh", ifname, flags)
         try:
             r = fcntl.ioctl(int(tapfds[i]), arch.TUNSETIFF, ifr)
-        except IOError, details:
+        except IOError as details:
             raise TAPCreationError(ifname, details)
 
     return ':'.join(tapfds)
@@ -1235,7 +1235,7 @@ def get_guest_ip_addr(session, mac_addr, os_type="linux", ip_version="ipv4",
                 return global_address[0]
             else:
                 return None
-    except Exception, err:
+    except Exception as err:
         logging.debug(session.cmd_output(info_cmd))
         raise IPAddrGetError(mac_addr, err)
 
@@ -1295,7 +1295,7 @@ def set_net_if_ip(if_name, ip_addr, runner=None):
     cmd = "ip addr add %s dev %s" % (ip_addr, if_name)
     try:
         runner(cmd)
-    except error.CmdError, e:
+    except error.CmdError as e:
         raise IfChangeAddrError(if_name, ip_addr, e)
 
 
@@ -1312,7 +1312,7 @@ def del_net_if_ip(if_name, ip_addr, runner=None):
     cmd = "ip addr del %s dev %s" % (ip_addr, if_name)
     try:
         runner(cmd)
-    except error.CmdError, e:
+    except error.CmdError as e:
         raise IfChangeAddrError(if_name, ip_addr, e)
 
 
@@ -1701,7 +1701,7 @@ def if_set_macaddress(ifname, mac):
     try:
         mac_dev = fcntl.ioctl(ctrl_sock, arch.SIOCGIFHWADDR, ifr)[18:24]
         mac_dev = ":".join(["%02x" % ord(m) for m in mac_dev])
-    except IOError, e:
+    except IOError as e:
         raise HwAddrGetError(ifname)
 
     if mac_dev.lower() == mac.lower():
@@ -1711,7 +1711,7 @@ def if_set_macaddress(ifname, mac):
                       "".join([chr(int(m, 16)) for m in mac.split(":")]))
     try:
         fcntl.ioctl(ctrl_sock, arch.SIOCSIFHWADDR, ifr)
-    except IOError, e:
+    except IOError as e:
         logging.info(e)
         raise HwAddrSetError(ifname, mac)
     ctrl_sock.close()
@@ -1890,7 +1890,7 @@ class IPv6Manager(propcan.PropCanBase):
                 self.check_connectivity(self.client_ifname, ipv6_addr_des)
             # flush ip6tables both local and remote host
             self.flush_ip6tables()
-        except Exception, e:
+        except Exception as e:
             self.close_session()
             raise error.TestError("Failed to setup IPv6 environment!!:%s", e)
 
@@ -2912,7 +2912,7 @@ def update_mac_ip_address(vm, params, timeout=None):
                 if macs_ips:
                     break
             # Get nics number
-        except Exception, err:
+        except Exception as err:
             logging.error(err)
         nics = params.get("nics")
         nic_minimum = len(re.split(r"\s+", nics.strip()))
@@ -3077,7 +3077,7 @@ def check_listening_port_by_service(service, port, listen_addr='0.0.0.0',
         if not runner:
             try:
                 os_dep.command("netstat")
-            except ValueError, details:
+            except ValueError as details:
                 raise error.TestNAError(details)
             output = utils.system_output(cmd)
         else:

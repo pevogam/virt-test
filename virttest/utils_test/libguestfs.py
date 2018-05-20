@@ -127,7 +127,7 @@ def define_new_vm(vm_name, new_name):
         logging.debug(str(vmxml))
         vmxml.define()
         return True
-    except xcepts.LibvirtXMLError, detail:
+    except xcepts.LibvirtXMLError as detail:
         logging.error(detail)
         return False
 
@@ -139,13 +139,13 @@ def cleanup_vm(vm_name=None, disk=None):
     try:
         if vm_name is not None:
             virsh.undefine(vm_name)
-    except error.CmdError, detail:
+    except error.CmdError as detail:
         logging.error("Undefine %s failed:%s", vm_name, detail)
     try:
         if disk is not None:
             if os.path.exists(disk):
                 os.remove(disk)
-    except IOError, detail:
+    except IOError as detail:
         logging.error("Remove disk %s failed:%s", disk, detail)
 
 
@@ -191,7 +191,7 @@ class VirtTools(object):
                 self.newvm.destroy()
                 self.newvm.wait_for_shutdown()
                 self.params['added_disk_path'] = attacho
-            except virt_vm.VMError, detail:
+            except virt_vm.VMError as detail:
                 raise VTAttachError("", str(detail))
         else:
             raise VTAttachError("", attacho)
@@ -284,7 +284,7 @@ class VirtTools(object):
                                  str(vmxml.__dict_get__('xml'))))
             logging.debug(vmxml.__dict_get__('xml'))
             vmxml.define()
-        except xcepts.LibvirtXMLError, detail:
+        except xcepts.LibvirtXMLError as detail:
             logging.debug(detail)
             return (False, detail)
         return (True, vmxml.xml)
@@ -367,7 +367,7 @@ class VirtTools(object):
             fd = open(file_path, "w")
             fd.write(content)
             fd.close()
-        except IOError, detail:
+        except IOError as detail:
             logging.error(detail)
             return (False, detail)
         logging.info("Create file %s successfully", file_path)
@@ -391,7 +391,7 @@ class VirtTools(object):
             primary_disk_info = fs_info[1]
             fs_type = primary_disk_info.split()[2]
             return fs_type
-        except (KeyError, ValueError), detail:
+        except (KeyError, ValueError) as detail:
             raise error.TestFail(str(detail))
 
     def tar_in(self, tar_file, dest="/tmp", vm_ref=None):
@@ -474,7 +474,7 @@ class VirtTools(object):
             os_root = xmltreefile.find("operatingsystem")
             if os_root is None:
                 raise VTXMLParseError("operatingsystem", os_root)
-        except (IOError, VTXMLParseError), detail:
+        except (IOError, VTXMLParseError) as detail:
             logging.error(detail)
             return sys_info
         sys_info['root'] = os_root.findtext("root")
@@ -814,7 +814,7 @@ class GuestfishTools(lgf.GuestfishPersistent):
                 if result.exit_status:
                     logging.error("Edit %s failed:%s", devices_file, result)
                     return False
-            except lgf.LibguestfsCmdError, detail:
+            except lgf.LibguestfsCmdError as detail:
                 logging.error("Edit %s failed:%s", devices_file, detail)
                 return False
             self.new_session()
@@ -836,7 +836,7 @@ class GuestfishTools(lgf.GuestfishPersistent):
                 if result.exit_status:
                     logging.error("Edit %s failed:%s", ifcfg_file, result)
                     return False
-            except lgf.LibguestfsCmdError, detail:
+            except lgf.LibguestfsCmdError as detail:
                 logging.error("Edit %s failed:%s", ifcfg_file, detail)
                 return False
             self.new_session()

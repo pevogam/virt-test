@@ -214,7 +214,7 @@ class PropCanBase(dict, PropCanInternal):
         self.__canhaz__(key)
         try:
             return self.__setitem__(key, value)
-        except KeyError, detail:
+        except KeyError as detail:
             # Prevent subclass instances from defining normal attributes
             raise AttributeError(str(detail))
 
@@ -231,7 +231,7 @@ class PropCanBase(dict, PropCanInternal):
         self.__canhaz__(key)
         try:
             return self.__setitem__(key, value)
-        except KeyError, detail:
+        except KeyError as detail:
             # Prevent subclass instances from defining normal attributes
             raise AttributeError(str(detail))
 
@@ -239,7 +239,7 @@ class PropCanBase(dict, PropCanInternal):
         self.__canhaz__(key)
         try:
             return self.__delitem__(key)
-        except KeyError, detail:
+        except KeyError as detail:
             # Prevent subclass instances from deleting normal attributes
             raise AttributeError(str(detail))
 
@@ -272,7 +272,7 @@ class PropCanBase(dict, PropCanInternal):
         try:
             _tmp_dict.update(_other_dict)
             _tmp_dict.update(kwargs)
-        except TypeError, detail:
+        except TypeError as detail:
             raise excpt(detail)
 
         for item in _tmp_dict.keys():

@@ -1624,7 +1624,7 @@ def get_dev_major_minor(dev):
     try:
         rdev = os.stat(dev).st_rdev
         return (os.major(rdev), os.minor(rdev))
-    except IOError, details:
+    except IOError as details:
         raise error.TestError("Fail to get major and minor numbers of the "
                               "device %s:\n%s" % (dev, details))
 
@@ -2535,7 +2535,7 @@ def get_image_info(image_file):
                     csize = line.split(':')[-1].strip()
                     image_info_dict['csize'] = int(csize)
         return image_info_dict
-    except (KeyError, IndexError, error.CmdError), detail:
+    except (KeyError, IndexError, error.CmdError) as detail:
         raise error.TestError("Fail to get information of %s:\n%s" %
                               (image_file, detail))
 
@@ -3071,7 +3071,7 @@ class VFIOController(object):
             elif load_modules:
                 try:
                     utils.load_module(key)
-                except error.CmdError, detail:
+                except error.CmdError as detail:
                     modules_error.append("Load module %s failed: %s"
                                          % (key, detail))
             else:
@@ -3084,7 +3084,7 @@ class VFIOController(object):
         if allow_unsafe_interrupts:
             try:
                 utils.run("echo Y > %s" % lnk)
-            except error.CmdError, detail:
+            except error.CmdError as detail:
                 raise VFIOError(str(detail))
 
     def check_iommu(self):
@@ -3114,7 +3114,7 @@ class VFIOController(object):
                         % pci_group_devices[0])
         try:
             group_id = int(os.path.basename(utils.run(readlink_cmd).stdout))
-        except ValueError, detail:
+        except ValueError as detail:
             raise error.TestError("Get iommu group id failed:%s" % detail)
         return group_id
 

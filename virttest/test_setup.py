@@ -191,7 +191,7 @@ class TransparentHugePageConfig(object):
                     file_object = open(file_name, "w")
                     file_object.write(act)
                     file_object.close()
-                except IOError, error_detail:
+                except IOError as error_detail:
                     logging.info("IO Operation on path %s failed: %s",
                                  file_name, error_detail)
                 timeout = time.time() + 50
@@ -274,7 +274,7 @@ class TransparentHugePageConfig(object):
                 p_file = open(path, 'w')
                 p_file.write(str(self.original_config[path]))
                 p_file.close()
-            except IOError, error_detail:
+            except IOError as error_detail:
                 logging.info("IO operation failed on file %s: %s", path,
                              error_detail)
 
@@ -322,7 +322,7 @@ class HugePageConfig(object):
         huge_line_list = [h for h in meminfo if h.startswith("Hugepagesize")]
         try:
             return int(huge_line_list[0].split()[1])
-        except ValueError, e:
+        except ValueError as e:
             raise ValueError("Could not get huge page size setting from "
                              "/proc/meminfo: %s" % e)
 
@@ -1688,7 +1688,7 @@ class EGDConfig(object):
             if not pid:
                 cmd = "%s %s" % (prog, socket)
                 utils.BgJob(cmd)
-        except Exception, details:
+        except Exception as details:
             msg = "Unable to start egd.pl on localhost '%s'" % details
             raise EGDConfigError(msg)
         pid = self.get_pid(socket)
@@ -1706,7 +1706,7 @@ class EGDConfig(object):
             src_root = self.__extra_tarball()
             os.chdir(src_root)
             utils.make(make=make_cmd, timeout=120)
-        except Exception, details:
+        except Exception as details:
             raise EGDConfigError("Install egd.pl error '%s'" % details)
         finally:
             os.chdir(pwd)

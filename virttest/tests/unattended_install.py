@@ -261,7 +261,7 @@ class UnattendedInstallConfig(object):
             if run_cmd:
                 hwid = '^&'.join(hwid.split('&'))
             return hwid
-        except Exception, e:
+        except Exception as e:
             logging.error("Fail to get hardware id with exception: %s" % e)
 
     @error.context_aware
@@ -1007,7 +1007,7 @@ def run(test, params, env):
             try:
                 error.context("Quit qemu-kvm before copying guest image")
                 vm.monitor.quit()
-            except Exception, e:
+            except Exception as e:
                 logging.warn(e)
             from virttest import utils_test
             error.context("Copy image from NFS Server")
@@ -1104,7 +1104,7 @@ def run(test, params, env):
                 vm.send_key(params.get("send_key_at_install"))
         # Due to a race condition, sometimes we might get a MonitorError
         # before the VM gracefully shuts down, so let's capture MonitorErrors.
-        except (virt_vm.VMDeadError, qemu_monitor.MonitorError), e:
+        except (virt_vm.VMDeadError, qemu_monitor.MonitorError) as e:
             if params.get("wait_no_ack", "no") == "yes":
                 break
             else:
@@ -1115,7 +1115,7 @@ def run(test, params, env):
 
         try:
             test.verify_background_errors()
-        except Exception, e:
+        except Exception as e:
             copy_images()
             raise e
 
@@ -1139,7 +1139,7 @@ def run(test, params, env):
             try:
                 vm.login()
                 break
-            except (remote.LoginError, Exception), e:
+            except (remote.LoginError, Exception) as e:
                 pass
 
         if migrate_background:
@@ -1188,6 +1188,6 @@ def run(test, params, env):
         try:
             if utils_misc.wait_for(vm.is_dead, shutdown_cleanly_timeout, 1, 1):
                 logging.info("Guest managed to shutdown cleanly")
-        except qemu_monitor.MonitorError, e:
+        except qemu_monitor.MonitorError as e:
             logging.warning("Guest apparently shut down, but got a "
                             "monitor error: %s", e)

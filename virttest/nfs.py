@@ -130,7 +130,7 @@ class Exportfs(object):
         export_cmd += " %s:%s" % (self.client, self.path)
         try:
             utils.system(export_cmd)
-        except error.CmdError, export_failed_err:
+        except error.CmdError as export_failed_err:
             logging.error("Can not export target: %s" % export_failed_err)
             return False
         return True

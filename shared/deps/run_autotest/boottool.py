@@ -1998,7 +1998,7 @@ class BoottoolApp(object):
             self.log.debug('Forcing bootloader "%s"', self.opts.bootloader)
             try:
                 self.grubby._set_bootloader(self.opts.bootloader)
-            except ValueError, msg:
+            except ValueError as msg:
                 self.log.error(msg)
                 sys.exit(-1)
 
