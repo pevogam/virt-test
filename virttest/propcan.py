@@ -39,17 +39,17 @@ example:
            super(A, self).__init__(a, b)
 
 
-        def set_a(self, value)
+        def set_a(self, value):
             # If is_instance(obj, A) then obj.a = "val" call this method.
             self.__dict_set__("a", value)
 
 
-        def get_a(self, value)
+        def get_a(self, value):
             # If is_instance(obj, A) then xx = obj.a call this method.
             return self.__dict_get__("a")
 
 
-        def del_a(self, value)
+        def del_a(self, value):
             # If is_instance(obj, A) then del obj.a call this method.
             self.__dict_del__("a")
 
@@ -181,7 +181,10 @@ class PropCanBase(dict, PropCanInternal):
             accessor = super(PropCanBase,
                              self).__getattribute__('get_%s' % key)
         except AttributeError:
-            return super(PropCanBase, self).__getitem__(key)
+            try:
+                return super(PropCanBase, self).__getitem__(key)
+            except KeyError:
+                return None
         return accessor()
 
     def __setitem__(self, key, value):
