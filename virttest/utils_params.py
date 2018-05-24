@@ -35,8 +35,10 @@ class Params(collections.UserDict):
         """
         suffix = "_" + obj_name
         self.lock.acquire()
-        new_dict = self.copy()
-        self.lock.release()
+        try:
+            new_dict = self.copy()
+        finally:
+            self.lock.release()
         for key in list(new_dict.keys()):
             if key.endswith(suffix):
                 new_key = key.split(suffix)[0]
