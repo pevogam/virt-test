@@ -717,7 +717,7 @@ class DevContainer(object):
             if _is_oldscsi or _scsi_without_device:
                 i += 1
 
-        for i in xrange(i / 7):     # Autocreated lsi hba
+        for i in range(int(i / 7)):     # Autocreated lsi hba
             if arch.ARCH in ('ppc64', 'ppc64le'):
                 _name = 'spapr-vscsi%s' % i
                 bus = qbuses.QSCSIBus("scsi.0", 'SCSI', [8, 16384],
