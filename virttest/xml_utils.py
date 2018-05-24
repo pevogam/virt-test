@@ -53,7 +53,8 @@ EXSFX = '_exception_retained'
 ENCODING = "UTF-8"
 
 
-class TempXMLFile(file):
+# TODO: this has to become a custom context manager
+class TempXMLFile(object):
 
     """
     Temporary XML file auto-removed on instance del / module exit.
