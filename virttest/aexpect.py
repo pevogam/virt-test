@@ -564,7 +564,8 @@ class Spawn(object):
                                    shell=True,
                                    stdin=subprocess.PIPE,
                                    stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT)
+                                   stderr=subprocess.STDOUT,
+                                   close_fds=False)
             # Send parameters to the server
             sub.stdin.write(("%s\n" % self.a_id).encode(self.encoding))
             sub.stdin.write(("%s\n" % echo).encode(self.encoding))

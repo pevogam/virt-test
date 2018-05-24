@@ -1079,6 +1079,8 @@ def open_tap(devname, ifname, queues=1, vnet_hdr=True):
         except IOError as details:
             raise TAPCreationError(ifname, details)
 
+        os.set_inheritable(int(tapfds[i]), True)
+
     return ':'.join(tapfds)
 
 
