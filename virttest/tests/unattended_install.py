@@ -104,7 +104,7 @@ class RemoteInstall(object):
         return os.path.join(self.path, filename)
 
     def close(self):
-        os.chmod(self.path, 0755)
+        os.chmod(self.path, 0o755)
         logging.debug("unattended http server %s successfully created",
                       self.get_url())
 

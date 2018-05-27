@@ -153,7 +153,7 @@ class Disk(object):
             shutil.copyfile(src, dst)
 
     def close(self):
-        os.chmod(self.path, 0755)
+        os.chmod(self.path, 0o755)
         cleanup(self.mount)
         logging.debug("Disk %s successfully set", self.path)
 
@@ -333,7 +333,7 @@ class CdromDisk(Disk):
                  '%s' % (self.path, self.mount))
         utils.run(g_cmd, verbose=DEBUG)
 
-        os.chmod(self.path, 0755)
+        os.chmod(self.path, 0o755)
         cleanup(self.mount)
         logging.debug("unattended install CD image %s successfully created",
                       self.path)
@@ -383,7 +383,7 @@ class CdromInstallDisk(Disk):
                  '-boot-load-size 4 -boot-info-table -f -R -J -V -T %s'
                  % (self.path, boot, self.mount))
         utils.run(m_cmd)
-        os.chmod(self.path, 0755)
+        os.chmod(self.path, 0o755)
         cleanup(self.mount)
         cleanup(self.source_cdrom)
         logging.debug("unattended install CD image %s successfully created",
