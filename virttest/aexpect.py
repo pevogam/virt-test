@@ -89,9 +89,9 @@ def _makestandard(shell_fd, echo):
 
 def _get_filenames(base_dir, a_id):
     return [os.path.join(base_dir, a_id, s) for s in
-            "shell-pid", "status", "output", "inpipe", "ctrlpipe",
+            ("shell-pid", "status", "output", "inpipe", "ctrlpipe",
             "lock-server-running", "lock-client-starting",
-            "server-log"]
+            "server-log")]
 
 
 def _get_reader_filename(base_dir, a_id, reader):
