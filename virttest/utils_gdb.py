@@ -3,7 +3,7 @@ import logging
 import signal
 import threading
 import aexpect
-import Queue
+import queue
 from virttest import utils_misc
 
 

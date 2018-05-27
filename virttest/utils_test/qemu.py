@@ -16,7 +16,7 @@ More specifically:
 :copyright: 2008-2013 Red Hat Inc.
 """
 
-import cPickle
+import pickle
 import errno
 import fcntl
 import logging
@@ -614,8 +614,8 @@ class MultihostMigration(object):
                 self._quick_check_vms(mig_data)
 
                 # Send vms configuration to dst host.
-                vms = cPickle.dumps([self.env.get_vm(vm_name)
-                                     for vm_name in mig_data.vms_name])
+                vms = pickle.dumps([self.env.get_vm(vm_name)
+                                    for vm_name in mig_data.vms_name])
 
                 self.env.get_vm(mig_data.vms_name[0]).monitor.info("qtree")
                 SyncData(self.master_id(), self.hostid,
@@ -623,9 +623,9 @@ class MultihostMigration(object):
                          self.sync_server).sync(vms, timeout=240)
             elif mig_data.is_dst():
                 # Load vms configuration from src host.
-                vms = cPickle.loads(SyncData(self.master_id(), self.hostid,
-                                             mig_data.hosts, mig_data.mig_id,
-                                             self.sync_server).sync(timeout=240)[mig_data.src])
+                vms = pickle.loads(SyncData(self.master_id(), self.hostid,
+                                            mig_data.hosts, mig_data.mig_id,
+                                            self.sync_server).sync(timeout=240)[mig_data.src])
                 for vm in vms:
                     # Save config to env. Used for create machine.
                     # When reuse_previous_config params is set don't check

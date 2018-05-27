@@ -1,5 +1,5 @@
-import cPickle
-import UserDict
+import pickle
+import collections
 import os
 import logging
 import re
@@ -144,8 +144,8 @@ class Env(UserDict.IterableUserDict):
         if filename:
             try:
                 if os.path.isfile(filename):
-                    f = open(filename, "r")
-                    env = cPickle.load(f)
+                    f = open(filename, "rb")
+                    env = pickle.load(f)
                     f.close()
                     if env.get("version", 0) >= version:
                         self.data = env
@@ -180,8 +180,8 @@ class Env(UserDict.IterableUserDict):
             raise EnvSaveError("No filename specified for this env file")
         self.save_lock.acquire()
         try:
-            f = open(filename, "w")
-            cPickle.dump(self.data, f)
+            f = open(filename, "wb")
+            pickle.dump(self.data, f)
             f.close()
         finally:
             self.save_lock.release()

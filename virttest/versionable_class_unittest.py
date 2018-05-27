@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import unittest
-import cPickle
+import pickle
 import sys
 
 import common
@@ -376,9 +376,9 @@ class TestVersionableClass(unittest.TestCase):
         m = factory(AA, system_version=0, qemu_version=0)()
         mm = factory(BB, qemu_version=3)()
 
-        f = open("/tmp/pick", "w+")
-        cPickle.dump(m, f, cPickle.HIGHEST_PROTOCOL)
-        cPickle.dump(mm, f, cPickle.HIGHEST_PROTOCOL)
+        f = open("/tmp/pick", "wb+")
+        pickle.dump(m, f, pickle.HIGHEST_PROTOCOL)
+        pickle.dump(mm, f, pickle.HIGHEST_PROTOCOL)
         f.close()
 
         # Delete classes for ensure that pickel works correctly.
@@ -390,9 +390,9 @@ class TestVersionableClass(unittest.TestCase):
         del mm
         del globals()[name]
 
-        f = open("/tmp/pick", "r+")
-        c = cPickle.load(f)
-        cc = cPickle.load(f)
+        f = open("/tmp/pick", "rb+")
+        c = pickle.load(f)
+        cc = pickle.load(f)
         f.close()
 
 

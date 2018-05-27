@@ -9,10 +9,10 @@ Created on Dec 6, 2013
 import os
 import logging
 import select
-import cPickle
+import pickle
 import time
 import remote_interface
-import cStringIO
+import io
 import base64
 
 
@@ -216,7 +216,7 @@ class Messenger(object):
         Format message where first 10 char is length of message and rest is
         piclked message.
         """
-        pdata = cPickle.dumps(data, cPickle.HIGHEST_PROTOCOL)
+        pdata = pickle.dumps(data, pickle.HIGHEST_PROTOCOL)
         pdata = self.stdout.encode(pdata)
         len_enc = self.stdout.encode("%10d" % len(pdata))
         return "%s%s" % (len_enc, pdata)
@@ -288,7 +288,7 @@ class Messenger(object):
                 rdata += self.stdin.read(cmd_len - rdata_len)
                 rdata_len = len(rdata)
             rdataIO = cStringIO.StringIO(self.stdin.decode(rdata))
-            unp = cPickle.Unpickler(rdataIO)
+            unp = pickle.Unpickler(rdataIO)
             unp.find_global = _map_path
             data = unp.load()
         except Exception as e:
