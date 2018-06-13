@@ -701,10 +701,9 @@ def run_autotest(vm, session, control_path, timeout,
         """
         hash_differs = False
         local_hash = utils.hash_file(local_path)
-        basename = os.path.basename(local_path)
+        dirname, basename = os.path.dirname(local_path), os.path.basename(local_path)
         output = session.cmd_output("md5sum %s" % remote_path,
-                                    timeout=int(
-                                        params.get("md5sum_timeout", 240)))
+                                    timeout=int(params.get("md5sum_timeout", 240)))
         if "such file" in output:
             remote_hash = "0"
         elif output:
@@ -721,11 +720,19 @@ def run_autotest(vm, session, control_path, timeout,
                                 " (remote hash: %s, local hash:%s,"
                                 " both dumped to your temp directory)",
                                 vm.name, remote_hash, local_hash)
+                def hash_already_copied(timeless_package, hash):
+                    for f in os.listdir(dirname):
+                        ff = os.path.join(dirname, f)
+                        if timeless_package in f and hash == utils.hash_file(ff):
+                            return True
+                    return False
                 tstamp = str(int(time.time()))
-                vm.copy_files_from(remote_path,
-                                   "%s-guest-%s" % (local_path, tstamp))
-                # on-host file is always expected to be present
-                utils.run("cp %s %s-host-%s" % (local_path, local_path, tstamp))
+                if not hash_already_copied(basename + "-guest", remote_hash):
+                    vm.copy_files_from(remote_path,
+                                       "%s-guest-%s" % (local_path, tstamp))
+                if not hash_already_copied(basename + "-host", local_hash):
+                    # on-host file is always expected to be present
+                    utils.run("cp %s %s-host-%s" % (local_path, local_path, tstamp))
             else:
                 # first time deployment is always allowed
                 hash_differs = True
