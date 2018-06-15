@@ -937,6 +937,7 @@ def run_autotest(vm, session, control_path, timeout,
     cmd += " --exclude=%s/results*" % autotest_basename
     cmd += " --exclude=%s/tmp" % autotest_basename
     cmd += " --exclude=%s/control*" % autotest_basename
+    cmd += " --exclude=*__pycache__"
     cmd += " --exclude=*.pyc"
     cmd += " --exclude=*.svn"
     cmd += " --exclude=*.git"
