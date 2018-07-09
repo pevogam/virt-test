@@ -941,7 +941,8 @@ def run_autotest(vm, session, control_path, timeout,
     cmd += " --exclude=*.pyc"
     cmd += " --exclude=*.svn"
     cmd += " --exclude=*.git"
-    cmd += " --exclude=%s/tests/virt/*" % autotest_basename
+    cmd += " --exclude=%s/tests/virt" % autotest_basename
+    cmd += " --exclude=%s/shared/data" % autotest_basename
     cmd += " %s/*" % autotest_basename
     utils.run(cmd)
 
