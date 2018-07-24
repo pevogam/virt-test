@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 __author__ = 'Lucas Meneghel Rodrigues <lmr@redhat.com>'

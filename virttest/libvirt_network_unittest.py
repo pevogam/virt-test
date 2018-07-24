@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 """
 Unit tests for Manipulator classes in libvirt_xml module.
 """

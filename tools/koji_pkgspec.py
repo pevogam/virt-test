@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 '''
 This is a tool for that makes it easy to understand what a given KojiPkgSpec

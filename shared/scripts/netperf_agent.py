@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 """
 :author Amos Kong <akong@redhat.com>
 
