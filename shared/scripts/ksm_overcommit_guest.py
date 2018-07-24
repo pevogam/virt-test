@@ -231,7 +231,7 @@ def main():
     end = False
     while not end:
         sr = raw_input()
-        exec sr
+        exec(sr)
 
 
 if __name__ == "__main__":
