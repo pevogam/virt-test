@@ -1786,7 +1786,7 @@ class VM(virt_vm.BaseVM):
             image_params['image_name'] = utils_misc.get_path(
                 data_dir.get_data_dir(),
                 image_params["floppy_name"])
-            image_params['image_format'] = None
+            image_params['image_format'] = 'raw'
             devs = devices.images_define_by_params(floppy_name, image_params,
                                                    media='')
             for _ in devs:
