@@ -757,7 +757,7 @@ class VM(virt_vm.BaseVM):
                 logging.warn("option '-%s' not supportted" % name)
 
         def add_usbdevice(devices, mouse_type):
-            return " -usbdevice %s" % mouse_type
+            return " -machine usb=on -device usb-%s" % mouse_type
 
         def add_pcidevice(devices, host, params, device_driver="pci-assign",
                           pci_bus='pci.0'):
