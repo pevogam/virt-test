@@ -1946,6 +1946,11 @@ class VM(virt_vm.BaseVM):
         if bios_path:
             devices.insert(StrDev('bios', cmdline="-bios %s" % bios_path))
 
+        fix_qemu210 = params.get("fix_qemu210")
+        if fix_qemu210:
+            devices.insert(qdevices.QGlobal("i440FX-pcihost", "x-pci-hole64-fix", "off"))
+            devices.insert(qdevices.QGlobal("q35-pcihost", "x-pci-hole64-fix", "off"))
+
         if params.get('ovmf_path'):
             if not os.path.exists(params['ovmf_path']):
                 raise error.TestError("The OVMF path is not exist. Maybe you"
